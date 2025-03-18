@@ -27949,5 +27949,11 @@ h4 {
   color: #ff8080 !important;
 }
 
+.swal2-confirm {
+  background-color: #ff8080 !important;
+  color: #fff !important;
+  border: #ff8080 !important;
+}
+
 
 /*# sourceMappingURL=dashboard-free.css.map */
