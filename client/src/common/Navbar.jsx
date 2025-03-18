@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { axiosInstance, BASE_URL } from "../Config";
-
+import { toast } from "react-toastify";
 
 const Navbar = ({ toggleSidebar, closeSidebar }) => {
   const location = useLocation();
@@ -78,7 +78,11 @@ const logout = async () => {
     try {
       await axiosInstance.post(`/logout`);
       localStorage.removeItem("token");
-      window.location.href = "/";
+      toast.success("Logged out successfully!");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000)
+   
     } catch (error) {
     }
   }

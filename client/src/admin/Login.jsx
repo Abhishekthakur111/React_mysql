@@ -39,29 +39,27 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!emailError && !passwordError) {
       try {
-        const response = await axiosInstance.post("/login", {
-          email,
-          password,
+        const response = await axiosInstance.post("/login", { email, password });
+  
+        localStorage.setItem("token", response.data.body.token);
+        navigate("/dashboard", {
+          state: { message: "Admin logged in successfully" },
         });
-        if (response.data.success) {
-          localStorage.setItem("token", response.data.body.token);
-          navigate("/dashboard", {
-            state: { message: "Admin logged in successfully" },
-          });
-        } else {
-          toast.error(response.data.message || "Login failed");
-        }
+        toast.success("Login successful!");
       } catch (error) {
-        toast.error("An error occurred while logging in. Please try again");
+        if (error.response) {
+       
+          toast.error(error.response.data.message || "Invalid email or password");
+        } else {
+          toast.error("Something went wrong. Please try again.");
+        }
       }
-    } else {
-      toast.error("Please fix the validation errors before submitting");
     }
   };
-
+  
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} />

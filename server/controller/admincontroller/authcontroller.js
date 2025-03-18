@@ -71,7 +71,7 @@ module.exports = {
             const userData = await db.users.findOne({ where: { email, role: "0" } });
 
             if (!userData) {
-                return helper.error(res, "Invalid Email or user not authorized");
+                return helper.error(res, "Invalid Email");
             }
             const isPasswordValid = await bcrypt.compare(password, userData.password);
             if (!isPasswordValid) {

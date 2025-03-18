@@ -2747,7 +2747,7 @@ progress {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5rem;
-  color: white;
+  color: black;
   background-color: transparent;
   background-clip: padding-box;
   border: 1px solid #d2d6da;
@@ -2771,7 +2771,7 @@ progress {
 }
 
 .form-control:focus {
-  color: white;
+  color: black;
   background-color: transparent;
   border-color: transparent;
   outline: 0;
@@ -2783,8 +2783,8 @@ progress {
 }
 
 .form-control::placeholder {
-  color: white;
-  opacity: 1;
+	color: #030202;
+	opacity: 1;
 }
 
 .form-control:disabled {
@@ -2796,7 +2796,7 @@ progress {
   padding: 0.5rem 0;
   margin: -0.5rem 0;
   margin-inline-end: 0;
-  color: white;
+  color: black;
   background-color: transparent;
   pointer-events: none;
   border-color: inherit;

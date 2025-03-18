@@ -11,9 +11,17 @@ module.exports ={
             body:body
                 });
     },
+    failure: function(res, message = "", body = {}) {
+        return res.status(400).json({
+            success: false,
+            status: 400,
+            message: message,
+            body: body
+        });
+    },
     error:function(res,message="",body={})
     {
-        return res.status(400).json({
+        return res.status(403).json({
             success:false,
             status:403,
             message:message,
