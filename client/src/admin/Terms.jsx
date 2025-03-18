@@ -90,7 +90,7 @@ const Terms = () => {
                         readOnly
                         style={{
                           paddingLeft: "10px",
-                          backgroundColor: "ff8080",
+                          backgroundColor: "#ff8080",
                         }}
                       />
                     </div>
@@ -103,7 +103,7 @@ const Terms = () => {
                       <div style={{ position: "relative" }}>
                         <ReactQuill
                           id="content"
-                          style={{ height: "400px", marginBottom: "50px" }}
+                          style={{ height: "400px", marginBottom: "50px",color:'black'  }}
                           theme="snow"
                           value={content}
                           onChange={setContent}
