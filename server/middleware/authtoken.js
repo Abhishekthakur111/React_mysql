@@ -17,11 +17,11 @@ module.exports = {
       next();
     } catch (error) {
       if (error.name === "JsonWebTokenError") {
-        return helper.error(res, "Invalid token", 403);
+        return helper.failure(res, "Invalid token", 400);
       } else if (error.name === "TokenExpiredError") {
-        return helper.error(res, "Token expired", 403);
+        return helper.failure(res, "Token expired", 400);
       }
-      return helper.error(res, "Internal server error", 500);
+      return helper.failure(res, "Internal server error", 400);
     }
   },
 };

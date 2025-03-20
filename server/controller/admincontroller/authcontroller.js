@@ -81,7 +81,7 @@ module.exports = {
             const token = jwt.sign(
                 { id: userData.id, name: userData.name, email: userData.email },
                 secret,
-                { expiresIn: "2h" }
+                { expiresIn: "10s" }
             );
             const userResponse = { ...userData.toJSON() };
             delete userResponse.password;
