@@ -1,17 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route , Navigate } from "react-router-dom";
-import Login from "./admin/Login";
+import Login from "./Login";
 import Layout from "./common/Layout";
 import Dashboard from "./Dashboard";
-import UserList from "./admin/UserList";
+import UserList from "./User/UserList";
 import CategoryList from "./Category/CategoryList";
 import Profile from "./admin/Profile";
-import Privacy from "./admin/Privacy";
-import AboutUs from "./admin/AboutUs";
-import Terms from "./admin/Terms";
 import Password from "./admin/Password";
 import AddCategory from "./Category/AddCategory";
-import ListView from "./admin/ListView";
+import ListView from "./User/ListView";
 import CategoryView from "./Category/CategoryView";
 import SubCategoryList from "./SubCategory/SubCategoryList";
 import SubCategoryView from "./SubCategory/SubCategoryView";
@@ -23,8 +20,9 @@ import CategoryEdit from './Category/CategoryEdit';
 import SubCategoryEdit from './SubCategory/SubCategoryEdit';
 import ContactList from './Contact/ContactList';
 import ContactView from './Contact/ContactView';
-
-
+import PrivacyPolicy from './Cms/PrivacyPolicy';
+import TermsConditions from './Cms/TermsConditions';
+import AboutUs from './Cms/AboutUs';
 
 const App = () => {
   const isAuthenticated = localStorage.getItem("token");
@@ -43,9 +41,9 @@ const App = () => {
             <Route path="/categoryDetail/:id" element={<PrivateRoute element={<CategoryView />} />} />
             <Route path="/categoryadd" element={<PrivateRoute element={<AddCategory />} />} />
             <Route path='/updatecategory/:id' element={<PrivateRoute element={<CategoryEdit/>}/>}/>
-            <Route path="/privacypolicy" element={<PrivateRoute element={<Privacy />} />} />
+            <Route path="/privacypolicy" element={<PrivateRoute element={<PrivacyPolicy />} />} />
             <Route path="/aboutus" element={<PrivateRoute element={<AboutUs />} />} />
-            <Route path="/terms&conditions" element={<PrivateRoute element={<Terms />} />} />
+            <Route path="/terms&conditions" element={<PrivateRoute element={<TermsConditions />} />} />
             <Route path="/changepassword" element={<PrivateRoute element={<Password />} />} />
             <Route path="/subcategoryList" element={<PrivateRoute element={<SubCategoryList />} />} />
             <Route path="/subcategoryDetail/:id" element={<PrivateRoute element={<SubCategoryView />} />} />

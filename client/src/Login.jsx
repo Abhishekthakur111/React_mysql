@@ -3,8 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "animate.css";
-import { axiosInstance } from "../Config";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { axiosInstance } from "./Config";
 
 const Login = () => {
   const navigate = useNavigate();

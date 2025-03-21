@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { axiosInstance } from "../Config";
 
-const Privacy = () => {
+const TermsConditions = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
@@ -16,7 +16,7 @@ const Privacy = () => {
   useEffect(() => {
     const fetchPrivacyPolicy = async () => {
       try {
-        const response = await axiosInstance.get(`/privacypolicy`);
+        const response = await axiosInstance.get(`/terms&conditions`);
         const { data } = response.data;
         setTitle(data.title || "");
         setContent(data.content || "<p><br></p>");
@@ -31,7 +31,7 @@ const Privacy = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (content.trim() === "<p><br></p>") {
-      setError("Privacy Policy cannot be empty.");
+      setError("terms&Conditions cannot be empty.");
       return;
     }
 
@@ -39,15 +39,15 @@ const Privacy = () => {
     setSubmitError("");
 
     try {
-      await axiosInstance.post(`/privacypolicy`, {
+      await axiosInstance.post(`/terms&conditions`, {
         title,
         content,
       });
-      toast.success("Privacy policy updated successfully");
-      navigate("/privacypolicy");
+      toast.success("Terms&Conditions updated successfully");
+      navigate(`/terms&conditions`);
     } catch (error) {
-      setSubmitError("Error submitting privacy policy. Please try again.");
-      toast.error("Error submitting privacy policy. Please try again.");
+      setSubmitError("Error submitting terms&conditons. Please try again.");
+      toast.error("Error submitting terms&conditons. Please try again.");
     }
   };
 
@@ -72,7 +72,7 @@ const Privacy = () => {
                 <div className="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-2">
                   <div className="d-flex justify-content-between align-items-center px-3 pt-1">
                     <h6 className="text-white text-capitalize">
-                      Privacy Policy
+                      Terms&Conditions
                     </h6>
                   </div>
                 </div>
@@ -131,7 +131,7 @@ const Privacy = () => {
                               fontStyle: "italic",
                             }}
                           >
-                            Privacy Policy cannot be empty.
+                            Terms&Conditons cannot be empty.
                           </div>
                         )}
                       </div>
@@ -166,4 +166,4 @@ const Privacy = () => {
   );
 };
 
-export default Privacy;
+export default TermsConditions;
