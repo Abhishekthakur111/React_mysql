@@ -20,9 +20,9 @@ import CategoryEdit from './Category/CategoryEdit';
 import SubCategoryEdit from './SubCategory/SubCategoryEdit';
 import ContactList from './Contact/ContactList';
 import ContactView from './Contact/ContactView';
-import PrivacyPolicy from './Cms/PrivacyPolicy';
-import TermsConditions from './Cms/TermsConditions';
-import AboutUs from './Cms/AboutUs';
+import PrivacyPolicy from './cms/PrivacyPolicy';
+import TermsConditions from './cms/TermsConditions';
+import AboutUs from './cms/AboutUs';
 
 const App = () => {
   const isAuthenticated = localStorage.getItem("token");
