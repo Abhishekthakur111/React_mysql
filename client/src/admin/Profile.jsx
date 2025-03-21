@@ -59,16 +59,20 @@ const Profile = () => {
   const validateName = (name) => {
     const nameRegex = /^[a-zA-Z\s]+$/;
     if (!name) return "Name is required";
-    if (name.length < 2 || name.length > 20) return "Name must be between 2 and 20 characters";
-    if (!nameRegex.test(name)) return "Name must contain only letters and spaces";
+    if (name.length < 2 || name.length > 20)
+      return "Name must be between 2 and 20 characters";
+    if (!nameRegex.test(name))
+      return "Name must contain only letters and spaces";
     return "";
   };
 
   const validatePhone = (phonenumber) => {
     const phoneRegex = /^[0-9]+$/;
     if (!phonenumber) return "Phone number is required";
-    if (phonenumber.length < 8 || phonenumber.length > 15) return "Phone number must be between 8 and 15 digits";
-    if (!phoneRegex.test(phonenumber)) return "Phone number must contain only numbers";
+    if (phonenumber.length < 8 || phonenumber.length > 15)
+      return "Phone number must be between 8 and 15 digits";
+    if (!phoneRegex.test(phonenumber))
+      return "Phone number must contain only numbers";
     return "";
   };
 
@@ -148,52 +152,142 @@ const Profile = () => {
                   <h6 className="text-white text-capitalize ps-3">Profile</h6>
                 </div>
               </div>
-              <form onSubmit={handleSubmit} className="form-validate" noValidate encType="multipart/form-data">
+              <form
+                onSubmit={handleSubmit}
+                className="form-validate"
+                noValidate
+                encType="multipart/form-data"
+              >
                 <div className="row">
                   <div className="col-md-12">
                     <div className="card">
                       <div className="card-body py-4">
                         <div className="tab-content">
                           <div className="tab-pane active" id="account">
-                            <div style={{ display: "flex", alignItems: "flex-start" }}>
-                              <div style={{ flex: "0 0 auto", position: "relative" }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "flex-start",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  flex: "0 0 auto",
+                                  position: "relative",
+                                }}
+                              >
                                 {imagePreview && (
                                   <>
-                                    <img src={imagePreview} alt="Preview" style={{ width: "300px", height: "300px", objectFit: "cover", borderRadius: "20px" }} />
-                                    <label htmlFor="image" style={{ position: "absolute", bottom: "15px", right: "10px", cursor: "pointer", backgroundColor: "rgba(255, 255, 255, 0.7)", borderRadius: "10%", padding: "5px" }}>
-                                      <FontAwesomeIcon icon={faPenNib} size="lg" color="red" />
+                                    <img
+                                      src={imagePreview}
+                                      alt="Preview"
+                                      style={{
+                                        width: "300px",
+                                        height: "300px",
+                                        objectFit: "cover",
+                                        borderRadius: "20px",
+                                      }}
+                                    />
+                                    <label
+                                      htmlFor="image"
+                                      style={{
+                                        position: "absolute",
+                                        bottom: "15px",
+                                        right: "10px",
+                                        cursor: "pointer",
+                                        backgroundColor:
+                                          "rgba(255, 255, 255, 0.7)",
+                                        borderRadius: "10%",
+                                        padding: "5px",
+                                      }}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faPenNib}
+                                        size="lg"
+                                        color="red"
+                                      />
                                     </label>
                                   </>
                                 )}
-                                <input type="file" style={{ display: "none" }} id="image" onChange={handleImageChange} />
+                                <input
+                                  type="file"
+                                  style={{ display: "none" }}
+                                  id="image"
+                                  onChange={handleImageChange}
+                                />
                               </div>
 
                               <div style={{ flex: "1", marginLeft: "16px" }}>
+                                <h3>Direct Name and Phone Number Update</h3>
                                 {["name", "phonenumber"].map((field, index) => (
-                                  <div key={index} style={{ marginBottom: "16px" }}>
-                                    <label htmlFor={field}>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                                  <div
+                                    key={index}
+                                    style={{ marginBottom: "16px" }}
+                                  >
+                                    <label htmlFor={field}>
+                                      {field === "name"
+                                        ? "Name"
+                                        : "Phone Number"}
+                                    </label>
                                     <input
                                       type="text"
                                       minLength={field === "name" ? 2 : 8}
                                       maxLength={field === "name" ? 20 : 15}
                                       required
-                                      placeholder="Name"
-                                      style={{ width: "100%", padding: "8px", borderRadius: "4px", border: "1px solid #ced4da",backgroundColor:'#fd7a7f' }}
+                                      placeholder={
+                                        field === "name"
+                                          ? "Enter Name"
+                                          : "Enter Phone Number"
+                                      }
+                                      style={{
+                                        width: "100%",
+                                        padding: "8px",
+                                        borderRadius: "4px",
+                                        border: "1px solid #ced4da",
+                                        backgroundColor: "#fd7a7f",
+                                      }}
                                       name={field}
                                       id={field}
                                       value={data[field]}
-                                      onChange={field === "name" ? handleNameChange : handlePhoneChange}
+                                      onChange={
+                                        field === "name"
+                                          ? handleNameChange
+                                          : handlePhoneChange
+                                      }
                                     />
-                                    {errors[field] && <p style={{ color: "red" }}>{errors[field]}</p>}
+                                    {errors[field] && (
+                                      <p style={{ color: "red" }}>
+                                        {errors[field]}
+                                      </p>
+                                    )}
                                   </div>
                                 ))}
 
                                 <div style={{ marginBottom: "16px" }}>
                                   <label htmlFor="email">Email</label>
-                                  <input type="email" required readOnly style={{ width: "100%", padding: "8px", borderRadius: "4px", border: "1px solid #ced4da", backgroundColor: "lightgrey" }} name="email" id="email" value={data.email} />
+                                  <input
+                                    type="email"
+                                    required
+                                    readOnly
+                                    style={{
+                                      width: "100%",
+                                      padding: "8px",
+                                      borderRadius: "4px",
+                                      border: "1px solid #ced4da",
+                                      backgroundColor: "lightgrey",
+                                    }}
+                                    name="email"
+                                    id="email"
+                                    value={data.email}
+                                  />
                                 </div>
 
-                                <button type="submit" className="btn btn-primary">Update</button>
+                                <button
+                                  type="submit"
+                                  className="btn btn-primary"
+                                >
+                                  Update
+                                </button>
                               </div>
                             </div>
                           </div>
