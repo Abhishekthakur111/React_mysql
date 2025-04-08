@@ -25,7 +25,7 @@ module.exports = {
             const newCategory = await db.categories.create({
                 name: req.body.name,
                 image: req.body.image || null,
-                status: req.body.status || "0",
+                status: req.body.status || "1",
             });
 
             return helper.success(res, "Category Created Successfully", { data: newCategory });

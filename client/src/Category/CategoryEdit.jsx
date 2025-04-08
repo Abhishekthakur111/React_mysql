@@ -12,6 +12,7 @@ const CategoryEdit = () => {
   const navigate = useNavigate();
   const [newImage, setNewImage] = useState(null);
   const [nameError, setNameError] = useState("");
+   const [imageError, setImageError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,10 +73,23 @@ const CategoryEdit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (nameError) {
-      toast.error("Please fix the errors before submitting.");
-      return;
-    }
+   
+       if (!data.image) {
+         toast.error("Category image is required!");
+         return;
+       }
+       if (!data.name.trim()) {
+         toast.error("Category name is required!");
+         return;
+       }
+       if (nameError) {
+         toast.error("Please fix the name error before submitting!");
+         return;
+       }
+       if (imageError) {
+         toast.error("Please fix the image error before submitting!");
+         return;
+       }
 
     const formData = new FormData();
     formData.append("name", data.name);
@@ -84,10 +98,7 @@ const CategoryEdit = () => {
     }
 
     try {
-      const response = await axiosInstance.post(
-        `/categoryupdate/${id}`,
-        formData
-      );
+      const response = await axiosInstance.post(`/categoryupdate/${id}`, formData);
       if (response.data.success) {
         toast.success("Category updated successfully");
         setTimeout(() => {
@@ -95,10 +106,15 @@ const CategoryEdit = () => {
         }, 1000);
       } else {
         setError("Failed to update category.");
+        toast.error("Failed to update category.");
       }
     } catch (err) {
-      setError("Error updating category.");
+      const message =
+        err?.response?.data?.message || "Error updating category.";
+      setError(message);
+      toast.error(message);
     }
+    
   };
 
   const handleBack = () => {

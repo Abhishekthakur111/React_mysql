@@ -74,24 +74,27 @@ const AddCategory = () => {
       formData.append("image", data.image);
     }
     formData.append("name", data.name);
-
     try {
       const response = await axiosInstance.post(`/createcategory`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
+    
       if (response.status === 200 && response.data.success) {
         toast.success("Category added successfully!");
-        setTimeout(()=>{
+        setTimeout(() => {
           navigate("/categorylist");
         }, 1000);
       } else {
-        toast.error("Category creation failed: " + response.data.message);
+        toast.error(response.data.message || "Category creation failed.");
       }
     } catch (error) {
-      toast.error("Request failed: " + error.message);
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Request failed: " + error.message);
+      }
     }
   };
 

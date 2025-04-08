@@ -218,7 +218,6 @@ const Profile = () => {
                               </div>
 
                               <div style={{ flex: "1", marginLeft: "16px" }}>
-                                <h3>Direct Name and Phone Number Update</h3>
                                 {["name", "phonenumber"].map((field, index) => (
                                   <div
                                     key={index}

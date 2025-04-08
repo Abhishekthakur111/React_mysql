@@ -71,10 +71,16 @@ const SubCategoryEdit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!subcategory.category_id || !subcategory.name || !subcategory.price) {
-      toast.error("Please fill in all required fields.");
+    if (!subcategory.name) {
+      toast.error("Sub category name is required!");
       return;
     }
+    if ( !subcategory.price) {
+      toast.error("Price is required!");
+      return;
+    }
+ 
+
 
     const formData = new FormData();
     formData.append("category_id", subcategory.category_id);
@@ -158,7 +164,7 @@ const SubCategoryEdit = () => {
                       name="category_id"
                       id="category_id"
                       className="form-control"
-                      required
+
                       value={subcategory.category_id || ""}
                       onChange={handleChange}
                       style={{
@@ -182,7 +188,7 @@ const SubCategoryEdit = () => {
                     <input
                       type="text"
                       className="form-control"
-                      required
+
                       name="name"
                       value={subcategory.name || ""}
                       onChange={handleChange}
@@ -198,7 +204,7 @@ const SubCategoryEdit = () => {
                     <input
                       type="number"
                       className="form-control"
-                      required
+
                       name="price"
                       value={subcategory.price || ""}
                       onChange={handleChange}
