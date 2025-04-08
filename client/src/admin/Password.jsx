@@ -55,7 +55,7 @@ const Password = () => {
         toast.error(response.data.message || "Password reset failed");
       }
     } catch (error) {
-      toast.error("An error occurred while resetting the password: " + (error.response?.data?.message || error.message));
+      toast.error((error.response?.data?.message || error.message));
     }
   };
 
