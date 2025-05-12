@@ -21,43 +21,49 @@ const Password = () => {
   const toggleShowNewPassword = () => setShowNewPassword((prev) => !prev);
   const toggleShowConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
 
-  const reset = async (e) => {
-    e.preventDefault();
+const reset = async (e) => {
+  e.preventDefault();
 
-    if (newPassword.length < 5 || newPassword.length > 50) {
-      toast.error("New password must be between 5 and 50 characters");
-      return;
+  if (newPassword.length < 5 || newPassword.length > 50) {
+    toast.error("New password must be between 5 and 50 characters");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    toast.error("New password and confirm password do not match");
+    return;
+  }
+
+  if (password === newPassword) {
+    toast.error("New password cannot be the same as the old password");
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+  if (!token) {
+    toast.error("No token found. Please log in again.");
+    return;
+  }
+
+  try {
+    const response = await axiosInstance.post(
+      `/updatepassword`,
+      { password, newPassword },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (response.data.success) {
+      localStorage.setItem('token', response.data.body.token);
+      toast.success("Your password was reset successfully");
+      navigate("/");
+    } else {
+      toast.error(response.data.message || "Password reset failed");
     }
+  } catch (error) {
+    toast.error((error.response?.data?.message || error.message));
+  }
+};
 
-    if (newPassword !== confirmPassword) {
-      toast.error("New password and confirm password do not match");
-      return;
-    }
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-      toast.error("No token found. Please log in again.");
-      return;
-    }
-
-    try {
-      const response = await axiosInstance.post(
-        `/updatepassword`,
-        { password, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      if (response.data.success) {
-        localStorage.setItem('token', response.data.body.token);
-        toast.success("Your password was reset successfully");
-        navigate("/");
-      } else {
-        toast.error(response.data.message || "Password reset failed");
-      }
-    } catch (error) {
-      toast.error((error.response?.data?.message || error.message));
-    }
-  };
 
   return (
     <>
