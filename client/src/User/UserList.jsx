@@ -20,7 +20,6 @@ const UserList = () => {
 
   useEffect(() => {
     dispatch(fetchUsers({ page: currentPage, limit })).then((response) => {
-      console.log("Fetched users:", response.payload); 
     });
   }, [dispatch, currentPage]);
   
