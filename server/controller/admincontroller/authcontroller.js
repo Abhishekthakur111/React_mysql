@@ -153,7 +153,7 @@ module.exports = {
     
             const isPasswordMatch = await bcrypt.compare(password, find_data.password);
             if (!isPasswordMatch) {
-                return helper.error(res, "Current password is incorrect");
+                return helper.error(res, "Old password is incorrect");
             }
             const isNewSameAsOld = await bcrypt.compare(newPassword, find_data.password);
             if (isNewSameAsOld) {
