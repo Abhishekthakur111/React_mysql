@@ -34,7 +34,6 @@ const ContactList = () => {
         );
       }
     } catch (error) {
-      console.error("Error fetching contact list", error);
       Swal.fire(
         "Error",
         "An error occurred while fetching the contact list",

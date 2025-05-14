@@ -22,7 +22,7 @@ const Profile = () => {
     const fetchProfileData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No token found in localStorage");
+        toast.error("No token found. Please log in again.");
         return;
       }
 
@@ -105,7 +105,7 @@ const Profile = () => {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("No token found in localStorage");
+      toast.error("No token found. Please log in again.");
       return;
     }
 

@@ -32,7 +32,6 @@ const SubCategoryList = () => {
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get(`/subcategorylist?page=${currentPage}&limit=${limit}`);
-      console.log(response);
       if (response.data.success) {
         setServices(response.data.body.data);
         setFilteredServices(response.data.body.data);

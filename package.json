@@ -1,0 +1,33 @@
+{
+  "name": "react-mysql-starter",
+  "version": "1.0.0",
+  "description": "A fullstack boilerplate project using React for frontend and Node.js with MySQL for backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Abhishekthakur111/React_mysql.git"
+  },
+  "author": "Abhishek Thakur",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Abhishekthakur111/React_mysql/issues"
+  },
+  "homepage": "https://github.com/Abhishekthakur111/React_mysql#readme",
+  "files": [
+    "client",
+    "server",
+    "README.md"
+  ],
+  "keywords": [
+    "react",
+    "mysql",
+    "express",
+    "nodejs",
+    "fullstack",
+    "starter",
+    "boilerplate"
+  ]
+}

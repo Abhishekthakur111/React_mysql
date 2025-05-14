@@ -35,7 +35,6 @@ const SubCategoryAdd = () => {
   const fetchData = async () => {
     try {
       const response = await axiosInstance.get(`/categorylist`);
-      console.log(response)
       if (response.data.success) {
         setCategories(response.data.body.data);
       }

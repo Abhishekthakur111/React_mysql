@@ -14,7 +14,6 @@ const BookingView = () => {
       setLoading(true);
       try {
         const response = await axiosInstance.get(`/bookingdetail/${id}`);
-        console.log(response)
         if (response.data.success) {
           setBooking(response.data.body.data);
         } else {

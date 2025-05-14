@@ -30,7 +30,6 @@ const BookingList = () => {
       const response = await axiosInstance.get(
         `/bookinglist?page=${currentPage}&limit=${limit}`
       );
-      console.log(response);
       if (response.data.success) {
         setBookings(response.data.body.data);
         setTotalPages(response.data.body.totalPages);
