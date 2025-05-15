@@ -39,7 +39,7 @@ const SubCategoryAdd = () => {
         setCategories(response.data.body.data);
       }
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      toast.error("Error fetching categories:", error);
     }
   };
 

@@ -194,7 +194,6 @@ module.exports = {
                 datacontact,
             });
         } catch (error) {
-            console.error(error);
             return helper.error(res, "Error fetching dashboard data", error);
         }
     },

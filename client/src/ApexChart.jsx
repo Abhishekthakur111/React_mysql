@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import { axiosInstance } from "./Config";
+import { toast, ToastContainer } from "react-toastify";
 
 const ApexChart = () => {
   const [series, setSeries] = useState([{ name: "Users", data: [] }]);
@@ -90,7 +91,7 @@ const ApexChart = () => {
           },
         }));
       } catch (error) {
-        console.error("Error fetching data:", error);
+        toast.error("Error fetching data:", error);
       }
     };
 
@@ -98,6 +99,12 @@ const ApexChart = () => {
   }, []);
 
   return (
+       <>
+        <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+          />
     <div className="col-12">
       <div className="card card-statistics">
         <div className="card-header">
@@ -108,6 +115,7 @@ const ApexChart = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
