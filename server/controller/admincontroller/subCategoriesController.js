@@ -4,7 +4,7 @@ const { Validator } = require("node-input-validator");
 
 db.subcategories.belongsTo(db.categories, {
     foreignKey: "category_id",  as: "category",
-});
+}); 
 
 module.exports = {
     subCategoryCreate: async (req, res) => {
