@@ -164,86 +164,92 @@ const CategoryList = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredCategories.map((category, index) => (
-                            <tr key={category.id}>
-                              <td>{(currentPage - 1) * limit + index + 1}</td>
-                              <td>{category.name || "no category"}</td>
-                              <td>
-                                {category.image ? (
-                                  <img
-                                    src={`${BASE_URL}/${category.image}`}
-                                    alt={category.name}
-                                    style={{
-                                      width: "50px",
-                                      height: "50px",
-                                      borderRadius: "50%",
-                                    }}
-                                  />
-                                ) : (
-                                  "No Image"
-                                )}
-                              </td>
-                              <td>
-                                <div className="form-check form-switch d-flex align-items-center justify-content-center">
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id={`statusSwitch-${category.id}`}
-                                    checked={category.status === "1"}
-                                    onChange={() =>
-                                      toggleStatus(
-                                        category.id,
-                                        category.status
-                                      )
-                                    }
-                                    style={{
-                                      backgroundColor:
-                                        category.status === "1"
-                                          ? "#ff8080"
-                                          : "lightgray",
-                                      borderColor:
-                                        category.status === "1"
-                                          ? "#ff8080"
-                                          : "lightgray",
-                                    }}
-                                  />
-                                </div>
-                              </td>
-                              <td>
-                                <Link
-                                  to={`/categoryDetail/${category.id}`}
-                                  className="btn btn-success m-1"
-                                  style={{
-                                    backgroundColor: "#ff8080",
-                                    color: "white",
-                                  }}
-                                >
-                                  <i className="fas fa-eye" />
-                                </Link>
-                                <Link
-                                  to={`/updatecategory/${category.id}`}
-                                  className="btn btn-success m-1"
-                                  style={{
-                                    backgroundColor: "#ff8080",
-                                    color: "white",
-                                  }}
-                                >
-                                  <i className="fas fa-edit" />
-                                </Link>
-                                <button
-                                  onClick={() => deleteCategory(category.id)}
-                                  className="btn m-1"
-                                  style={{
-                                    backgroundColor: "#ff8080",
-                                    borderColor: "#ff8080",
-                                    color: "#fff",
-                                  }}
-                                >
-                                  <i className="fas fa-trash" />
-                                </button>
-                              </td>
+                          {filteredCategories.length === 0 ? (
+                            <tr>
+                              <td colSpan="5">No categories found</td>
                             </tr>
-                          ))}
+                          ) : (
+                            filteredCategories.map((category, index) => (
+                              <tr key={category.id}>
+                                <td>{(currentPage - 1) * limit + index + 1}</td>
+                                <td>{category.name || "no category"}</td>
+                                <td>
+                                  {category.image ? (
+                                    <img
+                                      src={`${BASE_URL}/${category.image}`}
+                                      alt={category.name}
+                                      style={{
+                                        width: "50px",
+                                        height: "50px",
+                                        borderRadius: "50%",
+                                      }}
+                                    />
+                                  ) : (
+                                    "No Image"
+                                  )}
+                                </td>
+                                <td>
+                                  <div className="form-check form-switch d-flex align-items-center justify-content-center">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      id={`statusSwitch-${category.id}`}
+                                      checked={category.status === "1"}
+                                      onChange={() =>
+                                        toggleStatus(
+                                          category.id,
+                                          category.status
+                                        )
+                                      }
+                                      style={{
+                                        backgroundColor:
+                                          category.status === "1"
+                                            ? "#ff8080"
+                                            : "lightgray",
+                                        borderColor:
+                                          category.status === "1"
+                                            ? "#ff8080"
+                                            : "lightgray",
+                                      }}
+                                    />
+                                  </div>
+                                </td>
+                                <td>
+                                  <Link
+                                    to={`/categoryDetail/${category.id}`}
+                                    className="btn btn-success m-1"
+                                    style={{
+                                      backgroundColor: "#ff8080",
+                                      color: "white",
+                                    }}
+                                  >
+                                    <i className="fas fa-eye" />
+                                  </Link>
+                                  <Link
+                                    to={`/updatecategory/${category.id}`}
+                                    className="btn btn-success m-1"
+                                    style={{
+                                      backgroundColor: "#ff8080",
+                                      color: "white",
+                                    }}
+                                  >
+                                    <i className="fas fa-edit" />
+                                  </Link>
+                                  <button
+                                    onClick={() => deleteCategory(category.id)}
+                                    className="btn m-1"
+                                    style={{
+                                      backgroundColor: "#ff8080",
+                                      borderColor: "#ff8080",
+                                      color: "#fff",
+                                    }}
+                                  >
+                                    <i className="fas fa-trash" />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))
+                          )}
                         </tbody>
                       </table>
                     </div>

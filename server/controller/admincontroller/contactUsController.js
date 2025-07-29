@@ -8,7 +8,7 @@ module.exports = {
             const limit = parseInt(req.query.limit) || 10;
             const offset = (page - 1) * limit;
             const totalContacts = await db.contactus.count();
-            const data = await db.contactus.findAll({ limit, offset });
+            const data = await db.contactus.findAll({ limit, offset, order: [["id", "DESC"]], });
 
             return helper.success(res, "All contact details", {
                 data,

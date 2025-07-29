@@ -39,27 +39,31 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!emailError && !passwordError) {
       try {
-        const response = await axiosInstance.post("/login", { email, password });
-  
-        localStorage.setItem("token", response.data.body.token);
-        navigate("/dashboard", {
-          state: { message: "Admin logged in successfully" },
+        const response = await axiosInstance.post("/login", {
+          email,
+          password,
         });
-        toast.success("Login successful!");
+
+        localStorage.setItem("token", response.data.body.token);
+        navigate("/dashboard", {replace:true});
+        setTimeout(() => {
+          toast.success("Login successful!");
+        }, 1000);
       } catch (error) {
         if (error.response) {
-       
-          toast.error(error.response.data.message || "Invalid email or password");
+          toast.error(
+            error.response.data.message || "Invalid email or password"
+          );
         } else {
           toast.error("Something went wrong. Please try again.");
         }
       }
     }
   };
-  
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} />
@@ -105,7 +109,7 @@ const Login = () => {
                       <form onSubmit={handleSubmit} className="text-start">
                         <div className="input-group input-group-outline mb-2">
                           <span className="input-group-text px-2">
-                          <span className="material-icons">mail</span>
+                            <span className="material-icons">mail</span>
                           </span>
                           <input
                             type="email"

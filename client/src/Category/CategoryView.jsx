@@ -40,7 +40,7 @@ const CategoryView = () => {
               <div className="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-2">
                 <div className="d-flex justify-content-between align-items-center px-3 pt-1">
                   <h6 className="text-white text-capitalize">
-                    Category Detail
+                    Category Details
                   </h6>
                 </div>
               </div>

@@ -5,7 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const fileupload = require('express-fileupload');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 
@@ -29,6 +29,13 @@ app.use(cookieParser());
 app.use('/admin', express.static(path.join(__dirname, 'public')));
 app.use(fileupload());
 app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

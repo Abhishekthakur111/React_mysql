@@ -12,7 +12,7 @@ const CategoryEdit = () => {
   const navigate = useNavigate();
   const [newImage, setNewImage] = useState(null);
   const [nameError, setNameError] = useState("");
-   const [imageError, setImageError] = useState("");
+  const [imageError, setImageError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,10 +42,16 @@ const CategoryEdit = () => {
     const { name, value, files } = e.target;
 
     if (name === "name") {
-      const nameRegex = /^[a-zA-Z\s]*$/;
-      if (!nameRegex.test(value)) {
+      const trimmedValue = value.trimStart();
+      setData((prevData) => ({
+        ...prevData,
+        [name]: trimmedValue,
+      }));
+
+      const nameRegex = /^[A-Za-z][A-Za-z0-9\s@#&!()_\-.,]{2,19}$/;
+      if (!nameRegex.test(trimmedValue)) {
         setNameError(
-          "Name must contain only alphabetic characters and spaces."
+          "Name must start with a letter, be 3–20 characters, and include only letters, numbers, spaces, and @#&!()_-.,"
         );
       } else {
         setNameError("");
@@ -73,23 +79,23 @@ const CategoryEdit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
-       if (!data.image) {
-         toast.error("Category image is required!");
-         return;
-       }
-       if (!data.name.trim()) {
-         toast.error("Category name is required!");
-         return;
-       }
-       if (nameError) {
-         toast.error("Please fix the name error before submitting!");
-         return;
-       }
-       if (imageError) {
-         toast.error("Please fix the image error before submitting!");
-         return;
-       }
+
+    if (!data.image) {
+      toast.error("Category image is required!");
+      return;
+    }
+    if (!data.name.trim()) {
+      toast.error("Category name is required!");
+      return;
+    }
+    if (nameError) {
+      toast.error("Please fix the name error before submitting!");
+      return;
+    }
+    if (imageError) {
+      toast.error("Please fix the image error before submitting!");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("name", data.name);
@@ -98,7 +104,10 @@ const CategoryEdit = () => {
     }
 
     try {
-      const response = await axiosInstance.post(`/categoryupdate/${id}`, formData);
+      const response = await axiosInstance.post(
+        `/categoryupdate/${id}`,
+        formData
+      );
       if (response.data.success) {
         toast.success("Category updated successfully");
         setTimeout(() => {
@@ -114,7 +123,6 @@ const CategoryEdit = () => {
       setError(message);
       toast.error(message);
     }
-    
   };
 
   const handleBack = () => {
@@ -126,7 +134,11 @@ const CategoryEdit = () => {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+      />
       <div className="container-fluid">
         <div className="row">
           <div className="col-12">
@@ -134,7 +146,9 @@ const CategoryEdit = () => {
               <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                 <div className="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-2">
                   <div className="d-flex justify-content-between align-items-center px-3 pt-1">
-                    <h6 className="text-white text-capitalize">Edit Category</h6>
+                    <h6 className="text-white text-capitalize">
+                      Edit Category
+                    </h6>
                   </div>
                 </div>
               </div>
@@ -145,6 +159,7 @@ const CategoryEdit = () => {
                       <div className="card-body">
                         <form onSubmit={handleSubmit}>
                           <div className="form-group col-3">
+                            <label htmlFor="name">Category Image</label>
                             <div className="admin_profile" data-aspect="1/1">
                               {imagePreview && (
                                 <img
@@ -152,7 +167,7 @@ const CategoryEdit = () => {
                                   alt="Preview"
                                   style={{
                                     borderRadius: "10px",
-                                    width: "290px",
+                                    width: "240px",
                                     height: "200px",
                                     marginBottom: "5px",
                                   }}
@@ -179,11 +194,17 @@ const CategoryEdit = () => {
                               className="form-control"
                               value={data.name || ""}
                               onChange={handleChange}
+                              onInput={(e) => {
+                                e.target.value = e.target.value.replace(
+                                  /^\s+/g,
+                                  ""
+                                );
+                              }}
                               style={{
                                 paddingLeft: "10px",
                                 backgroundColor: "#ff8080",
                               }}
-                               placeholder="Enter category name"
+                              placeholder="Enter category name"
                             />
                             {nameError && (
                               <div style={{ color: "red", fontSize: "12px" }}>

@@ -31,7 +31,9 @@ const SubCategoryList = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axiosInstance.get(`/subcategorylist?page=${currentPage}&limit=${limit}`);
+      const response = await axiosInstance.get(
+        `/subcategorylist?page=${currentPage}&limit=${limit}`
+      );
       if (response.data.success) {
         setServices(response.data.body.data);
         setFilteredServices(response.data.body.data);
@@ -111,15 +113,17 @@ const SubCategoryList = () => {
     if (result.isConfirmed) {
       try {
         await axiosInstance.post(`/subcategorydelete/${id}`);
-          const response = await axiosInstance.get(`/subcategorylist?page=${currentPage}&limit=${limit}`);
-                if (response.data.success) {
-                  setServices(response.data.body.data);
-                  const newTotalPages = response.data.body.totalPages;
-                  if (currentPage > newTotalPages) {
-                    setCurrentPage(newTotalPages || 1);
-                  }
-                  setTotalPages(newTotalPages);
-                }
+        const response = await axiosInstance.get(
+          `/subcategorylist?page=${currentPage}&limit=${limit}`
+        );
+        if (response.data.success) {
+          setServices(response.data.body.data);
+          const newTotalPages = response.data.body.totalPages;
+          if (currentPage > newTotalPages) {
+            setCurrentPage(newTotalPages || 1);
+          }
+          setTotalPages(newTotalPages);
+        }
         Swal.fire("Deleted!", "Sub Category has been deleted.", "success");
       } catch (error) {
         Swal.fire(
@@ -232,10 +236,6 @@ const SubCategoryList = () => {
                                     <img
                                       src={`${BASE_URL}/${service.image}`}
                                       alt={service.name}
-                                      onError={(e) =>
-                                        (e.target.src =
-                                          "path/to/default/image.jpg")
-                                      }
                                       style={{
                                         width: "50px",
                                         height: "50px",
@@ -246,6 +246,7 @@ const SubCategoryList = () => {
                                     "No Image"
                                   )}
                                 </td>
+
                                 <td>
                                   <div className="form-check form-switch d-flex align-items-center justify-content-center">
                                     <input
@@ -254,10 +255,7 @@ const SubCategoryList = () => {
                                       id={`statusSwitch-${service.id}`}
                                       checked={service.status === "0"}
                                       onChange={() =>
-                                        toggleStatus(
-                                          service.id,
-                                          service.status
-                                        )
+                                        toggleStatus(service.id, service.status)
                                       }
                                       style={{
                                         backgroundColor:
@@ -315,9 +313,17 @@ const SubCategoryList = () => {
                         </tbody>
                       </table>
                     </div>
-                    <Stack spacing={2} className="d-flex justify-content-center mt-3">
-                  <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color="primary" />
-                </Stack>
+                    <Stack
+                      spacing={2}
+                      className="d-flex justify-content-center mt-3"
+                    >
+                      <Pagination
+                        count={totalPages}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        color="primary"
+                      />
+                    </Stack>
                   </div>
                 </div>
               </div>

@@ -3,8 +3,8 @@ const helper = require("../../helper/helper");
 const { Validator } = require("node-input-validator");
 
 db.subcategories.belongsTo(db.categories, {
-    foreignKey: "category_id",  as: "category",
-}); 
+    foreignKey: "category_id", as: "category",
+});
 
 module.exports = {
     subCategoryCreate: async (req, res) => {
@@ -14,35 +14,36 @@ module.exports = {
                 price: "numeric",
                 category_id: "required|string"
             });
-    
+
             let errorsResponse = await helper.checkValidation(v);
             if (errorsResponse) {
                 return helper.error(res, errorsResponse);
             }
-    
+
             const category = await db.categories.findOne({ where: { id: req.body.category_id } });
             if (!category) {
                 return helper.error(res, "Category not found", 404);
             }
-    
+
             let imagePath = null;
             if (req.files && req.files.image) {
                 imagePath = await helper.fileUpload(req.files.image);
             }
-    
+
             const newSubCategory = await db.subcategories.create({
                 name: req.body.name,
                 price: req.body.price || 0,
                 image: imagePath,
                 category_id: req.body.category_id,
+                status: req.body.status || "0",
             });
-    
+
             return helper.success(res, "Subcategory Created Successfully", { data: newSubCategory });
         } catch (error) {
             return helper.error(res, error.message);
         }
     },
-    
+
     subCategoryList: async (req, res) => {
         try {
             const page = parseInt(req.query.page) || 1;
@@ -54,11 +55,12 @@ module.exports = {
                 include: [
                     {
                         model: db.categories,
-                        as: "category", 
+                        as: "category",
                     },
                 ],
                 offset,
                 limit,
+                order: [["id", "DESC"]],
             });
             return helper.success(res, "All subcategory details", {
                 data: services,
@@ -144,7 +146,7 @@ module.exports = {
                 { where: { id } }
             );
             if (!updatedSubcategory[0]) {
-                return helper.error(res, "Failed to update subcategory", );
+                return helper.error(res, "Failed to update subcategory",);
             }
             return helper.success(res, "Subcategory updated successfully");
         } catch (error) {

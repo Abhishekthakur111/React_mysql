@@ -121,7 +121,10 @@ const ContactList = () => {
                           placeholder="Search by name..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          style={{ backgroundColor: "#fd7a7f" ,paddingLeft: "10px",}}
+                          style={{
+                            backgroundColor: "#fd7a7f",
+                            paddingLeft: "10px",
+                          }}
                         />
                       </div>
                     </div>
@@ -132,44 +135,58 @@ const ContactList = () => {
                             <th>Sr_No.</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Phone No</th>
-                            <th>Message</th>
+                            <th>Phone Number</th>
                             <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredUsers.map((user, index) => (
-                            <tr key={user.id}>
-                              <td>{index + 1}</td>
-                              <td>{user.name || "no user"}</td>
-                              <td>{user.email || "no email"}</td>
-                              <td>{user.phone_no || "no phone number"}</td>
-                              <td>{user.message || "no message"}</td>
-                              <td>
-                                <Link
-                                  to={`/contactDetail/${user.id}`}
-                                  className="has-icon btn btn-success m-1"
-                                  style={{
-                                    backgroundColor: "#ff8080",
-                                    color: "white",
-                                  }}
-                                >
-                                  <i className="me-100 fas fa-eye" />
-                                </Link>
-                                <button
-                                  onClick={() => deleteUser(user.id)}
-                                  className="has-icon btn m-1"
-                                  style={{
-                                    backgroundColor: "#ff8080",
-                                    borderColor: "#ff8080",
-                                    color: "#fff",
-                                  }}
-                                >
-                                  <i className="me-100 fas fa-trash" />
-                                </button>
+                          {filteredUsers.length > 0 ? (
+                            filteredUsers.map((user, index) => (
+                              <tr key={user.id}>
+                                <td>{index + 1}</td>
+                                <td>{user.name || "no user"}</td>
+                                <td>{user.email || "no email"}</td>
+                                <td>
+                                  {(user.countryCode || "") +
+                                    " " +
+                                    (user.phoneNumber || "N/A")}
+                                </td>
+
+                                <td>
+                                  <Link
+                                    to={`/contactDetail/${user.id}`}
+                                    className="has-icon btn btn-success m-1"
+                                    style={{
+                                      backgroundColor: "#ff8080",
+                                      color: "white",
+                                    }}
+                                  >
+                                    <i className="me-100 fas fa-eye" />
+                                  </Link>
+                                  <button
+                                    onClick={() => deleteUser(user.id)}
+                                    className="has-icon btn m-1"
+                                    style={{
+                                      backgroundColor: "#ff8080",
+                                      borderColor: "#ff8080",
+                                      color: "#fff",
+                                    }}
+                                  >
+                                    <i className="me-100 fas fa-trash" />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td
+                                colSpan="6"
+                                className="text-center text-muted"
+                              >
+                                No contacts found
                               </td>
                             </tr>
-                          ))}
+                          )}
                         </tbody>
                       </table>
                     </div>

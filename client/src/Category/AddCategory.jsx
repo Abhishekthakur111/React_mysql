@@ -14,7 +14,7 @@ const AddCategory = () => {
   const [imageError, setImageError] = useState("");
   const navigate = useNavigate();
 
-  const nameValidation = /^[A-Za-z\s]+$/;
+  const nameValidation = /^[A-Za-z][A-Za-z0-9\s@#&!()_\-.,]{2,19}$/;
   const handleChange = (e) => {
     const { id, value, files } = e.target;
     if (id === "image" && files.length > 0) {
@@ -37,12 +37,16 @@ const AddCategory = () => {
         setImagePreview(null);
       }
     } else if (id === "name") {
+      const trimmedValue = value.trimStart();
       setData((prevData) => ({
         ...prevData,
-        [id]: value,
+        [id]: trimmedValue,
       }));
-      if (!nameValidation.test(value.trim())) {
-        setNameError("Category name must only contain alphabets and spaces.");
+
+      if (!/^[A-Za-z][A-Za-z0-9\s@#&!()_\-.,]{2,19}$/.test(trimmedValue)) {
+        setNameError(
+          "Name must start with a letter, be 3–20 characters, and include only letters, numbers, spaces, and @#&!()_-.,"
+        );
       } else {
         setNameError("");
       }
@@ -80,7 +84,7 @@ const AddCategory = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-    
+
       if (response.status === 200 && response.data.success) {
         toast.success("Category added successfully!");
         setTimeout(() => {
@@ -90,7 +94,11 @@ const AddCategory = () => {
         toast.error(response.data.message || "Category creation failed.");
       }
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         toast.error(error.response.data.message);
       } else {
         toast.error("Request failed: " + error.message);
@@ -125,6 +133,7 @@ const AddCategory = () => {
               <form onSubmit={handleSubmit}>
                 <div className="card-body">
                   <div className="form-group col-3 mb-2 bg-ff8080">
+                    <label htmlFor="name">Category Image</label>
                     <div className="admin_profile mt-2" data-aspect="1/1">
                       {imagePreview && (
                         <img
@@ -132,7 +141,7 @@ const AddCategory = () => {
                           alt="Preview"
                           style={{
                             borderRadius: "10px",
-                            width: "290px",
+                            width: "240px",
                             height: "200px",
                             marginBottom: "5px",
                           }}
@@ -161,12 +170,16 @@ const AddCategory = () => {
                       id="name"
                       value={data.name}
                       onChange={handleChange}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(/^\s+/g, "");
+                      }}
                       style={{
                         paddingLeft: "10px",
                         backgroundColor: "#ff8080",
                       }}
                       placeholder="Enter category name"
                     />
+
                     {nameError && (
                       <div style={{ color: "red" }}>{nameError}</div>
                     )}

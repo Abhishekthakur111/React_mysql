@@ -94,7 +94,7 @@ const Dashboard = () => {
                     <i className="material-icons opacity-10">list</i>
                   </div>
                   <div className="text-end ">
-                    <h4>Sub Categories</h4>
+                    <h4 >Sub Categories</h4>
                     <h4>{subCategories}</h4>
                   </div>
                 </div>

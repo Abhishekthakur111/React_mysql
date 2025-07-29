@@ -176,39 +176,57 @@ const Profile = () => {
                                   position: "relative",
                                 }}
                               >
-                                {imagePreview && (
-                                  <>
-                                    <img
-                                      src={imagePreview}
-                                      alt="Preview"
-                                      style={{
-                                        width: "300px",
-                                        height: "300px",
-                                        objectFit: "cover",
-                                        borderRadius: "20px",
-                                      }}
-                                    />
-                                    <label
-                                      htmlFor="image"
-                                      style={{
-                                        position: "absolute",
-                                        bottom: "15px",
-                                        right: "10px",
-                                        cursor: "pointer",
-                                        backgroundColor:
-                                          "rgba(255, 255, 255, 0.7)",
-                                        borderRadius: "10%",
-                                        padding: "5px",
-                                      }}
-                                    >
-                                      <FontAwesomeIcon
-                                        icon={faPenNib}
-                                        size="lg"
-                                        color="red"
+                                <div
+                                  style={{
+                                    width: "300px",
+                                    height: "300px",
+                                    borderRadius: "20px",
+                                    backgroundColor: "#e0e0e0",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "#555",
+                                    fontSize: "1.2rem",
+                                    position: "relative",
+                                  }}
+                                >
+                                  {imagePreview ? (
+                                    <>
+                                      <img
+                                        src={imagePreview}
+                                        alt="image"
+                                        style={{
+                                          width: "300px",
+                                          height: "300px",
+                                          objectFit: "cover",
+                                          borderRadius: "20px",
+                                        }}
                                       />
-                                    </label>
-                                  </>
-                                )}
+                                      <label
+                                        htmlFor="image"
+                                        style={{
+                                          position: "absolute",
+                                          bottom: "15px",
+                                          right: "10px",
+                                          cursor: "pointer",
+                                          backgroundColor:
+                                            "rgba(255, 255, 255, 0.7)",
+                                          borderRadius: "10%",
+                                          padding: "5px",
+                                        }}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faPenNib}
+                                          size="lg"
+                                          color="black"
+                                        />
+                                      </label>
+                                    </>
+                                  ) : (
+                                    <span>No Image</span>
+                                  )}
+                                </div>
+
                                 <input
                                   type="file"
                                   style={{ display: "none" }}

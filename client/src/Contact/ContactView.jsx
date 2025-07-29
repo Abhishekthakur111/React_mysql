@@ -43,7 +43,7 @@ const ContactView = () => {
               <div className="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-2">
                 <div className="d-flex justify-content-between align-items-center px-3 pt-1">
                   <h6 className="text-white text-capitalize">
-                    Contact Detail
+                    Contact Details
                   </h6>
                 </div>
               </div>
@@ -82,7 +82,9 @@ const ContactView = () => {
                           type="text"
                           id="phone_no"
                           className="form-control"
-                          value={data.phone_no || ""}
+                           value={`${data.countryCode || ""} ${
+                            data.phoneNumber || ""
+                          }`}
                           readOnly
                           style={{ paddingLeft: '10px', backgroundColor: '#ff8080' }}
                         />

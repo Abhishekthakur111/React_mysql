@@ -11,6 +11,7 @@ const SubCategoryEdit = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,16 +45,49 @@ const SubCategoryEdit = () => {
     fetchSubcategoryData();
   }, [id]);
 
+  const validateField = (name, value) => {
+    let errorMsg = "";
+
+    if (name === "name") {
+      if (!value.trim()) {
+        errorMsg = "Please enter subcategory name.";
+      } else if (!/^[A-Za-z][A-Za-z0-9\s@#&!()_\-.,]{2,19}$/.test(value.trim())) {
+        errorMsg =
+          "Name must start with a letter, be 3–20 characters, and contain valid characters.";
+      }
+    }
+
+    if (name === "price") {
+      if (!value) {
+        errorMsg = "Please enter price.";
+      } else if (isNaN(value) || Number(value) <= 0) {
+        errorMsg = "Price must be a valid positive number.";
+      }
+    }
+
+    if (name === "image") {
+      if (value && value instanceof File) {
+        const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+        if (!validTypes.includes(value.type)) {
+          errorMsg = "Only JPG and PNG images are allowed.";
+        }
+      }
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: errorMsg,
+    }));
+
+    return errorMsg === "";
+  };
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "name" && !/^[A-Za-z\s]*$/.test(value)) {
-      toast.error("Name should only contain alphabetic characters.");
-      return;
-    }
+
     if (name === "image" && files.length > 0) {
       const file = files[0];
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select a valid image file.");
+      if (!validateField(name, file)) {
         return;
       }
       setSubcategory((prevData) => ({
@@ -62,6 +96,14 @@ const SubCategoryEdit = () => {
       }));
       setImagePreview(URL.createObjectURL(file));
     } else {
+      if (!validateField(name, value)) {
+        setSubcategory((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
+        return;
+      }
+
       setSubcategory((prevData) => ({
         ...prevData,
         [name]: value,
@@ -69,22 +111,28 @@ const SubCategoryEdit = () => {
     }
   };
 
+  const validateForm = () => {
+    const { name, price, image } = subcategory;
+    let isValid = true;
+    if (!validateField("name", name)) isValid = false;
+    if (!validateField("price", price)) isValid = false;
+    if (image && image instanceof File && !validateField("image", image)) {
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!subcategory.name) {
-      toast.error("Sub category name is required!");
-      return;
-    }
-    if ( !subcategory.price) {
-      toast.error("Price is required!");
-      return;
-    }
- 
 
+    if (!validateForm()) {
+      return;
+    }
 
     const formData = new FormData();
     formData.append("category_id", subcategory.category_id);
-    formData.append("name", subcategory.name);
+    formData.append("name", subcategory.name.trim());
     formData.append("price", subcategory.price);
     if (subcategory.image) {
       formData.append("image", subcategory.image);
@@ -106,7 +154,9 @@ const SubCategoryEdit = () => {
           navigate("/subcategorylist");
         }, 1000);
       } else {
-        toast.error(`Update failed: ${response.data.message || "Unknown error"}`);
+        toast.error(
+          `Update failed: ${response.data.message || "Unknown error"}`
+        );
       }
     } catch (error) {
       toast.error(`Request failed: ${error.message}`);
@@ -133,6 +183,7 @@ const SubCategoryEdit = () => {
               <form onSubmit={handleSubmit}>
                 <div className="card-body">
                   <div className="form-group col-3">
+                    <label htmlFor="name">Image</label>
                     <div className="admin_profile" data-aspect="1/1">
                       {imagePreview && (
                         <img
@@ -140,7 +191,7 @@ const SubCategoryEdit = () => {
                           alt="Preview"
                           style={{
                             borderRadius: "10px",
-                            width: "290px",
+                            width: "240px",
                             height: "200px",
                             marginBottom: "5px",
                           }}
@@ -156,6 +207,9 @@ const SubCategoryEdit = () => {
                           backgroundColor: "#ff8080",
                         }}
                       />
+                      {errors.image && (
+                        <small className="text-danger">{errors.image}</small>
+                      )}
                     </div>
                   </div>
                   <div className="form-group mb-2">
@@ -164,7 +218,6 @@ const SubCategoryEdit = () => {
                       name="category_id"
                       id="category_id"
                       className="form-control"
-
                       value={subcategory.category_id || ""}
                       onChange={handleChange}
                       style={{
@@ -188,7 +241,6 @@ const SubCategoryEdit = () => {
                     <input
                       type="text"
                       className="form-control"
-
                       name="name"
                       value={subcategory.name || ""}
                       onChange={handleChange}
@@ -198,13 +250,15 @@ const SubCategoryEdit = () => {
                       }}
                       placeholder="Enter sub category name"
                     />
+                    {errors.name && (
+                      <small className="text-danger">{errors.name}</small>
+                    )}
                   </div>
                   <div className="form-group mb-2">
                     <label htmlFor="price">Price</label>
                     <input
                       type="number"
                       className="form-control"
-
                       name="price"
                       value={subcategory.price || ""}
                       onChange={handleChange}
@@ -214,13 +268,24 @@ const SubCategoryEdit = () => {
                       }}
                       placeholder="Enter price"
                     />
+                    {errors.price && (
+                      <small className="text-danger">{errors.price}</small>
+                    )}
                   </div>
                 </div>
                 <div className="mx-4 text-end">
-                  <button type="submit" className="btn btn-primary" style={{ marginRight: "10px" }}>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    style={{ marginRight: "10px" }}
+                  >
                     Update
                   </button>
-                  <button type="button" className="btn btn-primary" onClick={() => navigate("/subcategoryList")}>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => navigate("/subcategorylist")}
+                  >
                     Back
                   </button>
                 </div>

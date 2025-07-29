@@ -17,8 +17,13 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: ""
     },
-    phone_no: {
-      type: DataTypes.STRING(255),
+    countryCode: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+      defaultValue: ""
+    },
+    phoneNumber: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       defaultValue: ""
     },

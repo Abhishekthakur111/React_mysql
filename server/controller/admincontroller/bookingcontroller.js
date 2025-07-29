@@ -20,7 +20,7 @@ module.exports = {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
             const offset = (page - 1) * limit;
-    
+
             const { count, rows } = await db.bookings.findAndCountAll({
                 include: [
                     { model: db.users, as: "user" },
@@ -28,7 +28,8 @@ module.exports = {
                     { model: db.categories, as: "category" }
                 ],
                 limit,
-                offset
+                offset,
+                order: [["id", "DESC"]],
             });
             return helper.success(res, "All booking details", {
                 data: rows,

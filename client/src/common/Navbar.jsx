@@ -101,25 +101,26 @@ const logout = async () => {
     '/contactlist':'Contacts',
     '/categoryadd':'Add Category',
     '/subcategoryadd': 'Add Sub Category',
+    '/subcategoryList': 'Sub Categories',
   };
 
   const currentPath = location.pathname;
   const currentTitle =
     pathToTitleMap[currentPath] ||
     (currentPath.startsWith("/userDetail")
-      ? "User Detail"
+      ? "User Details"
       : currentPath.startsWith("/booking")
-      ? "Booking Detail"
+      ? "Booking Details"
       : currentPath.startsWith("/subcategory")
-      ? "Sub Category Detail"
+      ? "Sub Category Details"
       : currentPath.startsWith("/categoryDetail")
-      ? "Category Detail"
+      ? "Category Details"
       : currentPath.startsWith("/updatecategory")
       ? "Edit Category"
       : currentPath.startsWith("/updatesubcategory")
       ? "Edit Sub Category"
       : currentPath.startsWith("/contactDetail/")
-      ? "Contact Detail"
+      ? "Contact Details"
        : currentPath.startsWith("/categoryadd")
       ? "Add Category"
       

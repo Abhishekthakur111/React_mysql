@@ -1,5 +1,5 @@
 const db = require('../../models');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const helper = require('../../helper/helper');
 const { Validator } = require('node-input-validator');
 const jwt = require("jsonwebtoken");

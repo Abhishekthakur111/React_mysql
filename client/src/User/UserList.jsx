@@ -17,12 +17,9 @@ const UserList = () => {
   const dispatch = useDispatch();
   const { users = [], totalPages } = useSelector((state) => state.users);
 
-
   useEffect(() => {
-    dispatch(fetchUsers({ page: currentPage, limit })).then((response) => {
-    });
+    dispatch(fetchUsers({ page: currentPage, limit })).then((response) => {});
   }, [dispatch, currentPage]);
-  
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
@@ -38,10 +35,10 @@ const UserList = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     });
-  
+
     if (result.isConfirmed) {
       try {
-        await dispatch(deleteUser(id)).unwrap(); 
+        await dispatch(deleteUser(id)).unwrap();
         Swal.fire("Deleted!", "User has been deleted.", "success");
       } catch (error) {
         Swal.fire(
@@ -54,7 +51,6 @@ const UserList = () => {
       Swal.fire("Cancelled", "User deletion has been cancelled", "info");
     }
   };
-  
 
   const toggleStatus = async (id, currentStatus) => {
     dispatch(toggleUserStatus({ id, currentStatus }));
@@ -62,10 +58,10 @@ const UserList = () => {
   };
 
   const filteredUsers = Array.isArray(users)
-  ? users.filter((user) =>
-      user.name?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  : [];
+    ? users.filter((user) =>
+        user.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   return (
     <>
@@ -118,82 +114,91 @@ const UserList = () => {
                             <th>Name</th>
                             <th>Email</th>
                             <th>Address</th>
-                            <th>Phone No</th>
                             <th>Status</th>
                             <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredUsers.map((user, index) => (
-                            <tr key={user.id}>
-                              <td>{(currentPage - 1) * limit + index + 1}</td>
-                              <td>
-                                {user.image ? (
-                                  <img
-                                    src={`${BASE_URL}/${user.image}`}
-                                    alt={user.image}
+                          {filteredUsers.length > 0 ? (
+                            filteredUsers.map((user, index) => (
+                              <tr key={user.id}>
+                                <td>{(currentPage - 1) * limit + index + 1}</td>
+                                <td>
+                                  {user.image ? (
+                                    <img
+                                      src={`${BASE_URL}/${user.image}`}
+                                      alt="User"
+                                      style={{
+                                        width: "50px",
+                                        height: "50px",
+                                        borderRadius: "50%",
+                                      }}
+                                    />
+                                  ) : (
+                                    "No Image"
+                                  )}
+                                </td>
+                                <td>{user.name || "no user"}</td>
+                                <td>{user.email || "no email"}</td>
+                                <td>{user.location || "no address"}</td>
+                                <td>
+                                  <div className="form-check form-switch d-flex align-items-center justify-content-center">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      id={`toggleStatus${user.id}`}
+                                      checked={user.status === "1"}
+                                      onChange={() =>
+                                        toggleStatus(user.id, user.status)
+                                      }
+                                      style={{
+                                        backgroundColor:
+                                          user.status === "1"
+                                            ? "#ff8080"
+                                            : "lightgray",
+                                        borderColor:
+                                          user.status === "1"
+                                            ? "#ff8080"
+                                            : "lightgray",
+                                      }}
+                                    />
+                                  </div>
+                                </td>
+                                <td>
+                                  <Link
+                                    to={`/userDetail/${user.id}`}
+                                    className="has-icon btn btn-success m-1"
                                     style={{
-                                      width: "50px",
-                                      height: "50px",
-                                      borderRadius: "50%",
+                                      backgroundColor: "#ff8080",
+                                      color: "white",
                                     }}
-                                  />
-                                ) : (
-                                  "No Image"
-                                )}
-                              </td>
-                              <td>{user.name || "no user"}</td>
-                              <td>{user.email || "no email"}</td>
-                              <td>{user.location || "no address"}</td>
-                              <td>{user.phonenumber || "no phone number"}</td>
-                              <td>
-                                <div className="form-check form-switch d-flex align-items-center justify-content-center">
-                                  <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id={`toggleStatus${user.id}`}
-                                    checked={user.status === "1"}
-                                    onChange={() =>
-                                      toggleStatus(user.id, user.status)
-                                    }
+                                  >
+                                    <i className="me-100 fas fa-eye" />
+                                  </Link>
+                                  <button
+                                    onClick={() => deleteUserHandler(user.id)}
+                                    className="has-icon btn m-1"
                                     style={{
-                                      backgroundColor:
-                                        user.status === "1"
-                                          ? "#ff8080"
-                                          : "lightgray",
-                                      borderColor:
-                                        user.status === "1"
-                                          ? "#ff8080"
-                                          : "lightgray",
+                                      backgroundColor: "#ff8080",
+                                      borderColor: "#ff8080",
+                                      color: "#fff",
                                     }}
-                                  />
-                                </div>
-                              </td>
-                              <td>
-                                <Link
-                                  to={`/userDetail/${user.id}`}
-                                  className="has-icon btn btn-success m-1"
-                                  style={{
-                                    backgroundColor: "#ff8080",
-                                    color: "white",
-                                  }}
-                                >
-                                  <i className="me-100 fas fa-eye" />
-                                </Link>
-                                <button
-                                  onClick={() => deleteUserHandler(user.id)}
-                                  className="has-icon btn m-1"
-                                  style={{
-                                    backgroundColor: "#ff8080",
-                                    borderColor: "#ff8080",
-                                    color: "#fff",
-                                  }}
-                                >
-                                  <i className="me-100 fas fa-trash" />
-                                </button>
+                                  >
+                                    <i className="me-100 fas fa-trash" />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td
+                                colSpan="8"
+                                style={{ textAlign: "center", padding: "20px" }}
+                              >
+                                No users found
                               </td>
                             </tr>
-                          ))}
+                          )}
                         </tbody>
                       </table>
                     </div>

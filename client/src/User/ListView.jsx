@@ -39,7 +39,7 @@ const ListView = () => {
             <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
               <div className="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-2">
                 <div className="d-flex justify-content-between align-items-center px-3 pt-1">
-                  <h6 className="text-white text-capitalize">User Detail</h6>
+                  <h6 className="text-white text-capitalize">User Details</h6>
                 </div>
               </div>
             </div>
@@ -49,7 +49,7 @@ const ListView = () => {
                   <div className="card">
                     <div className="card-body">
                       <div className="form-group mx-auto">
-                        {data.image && (
+                        {data.image ? (
                           <div className="image-container text-center">
                             <img
                               src={`${BASE_URL}${data.image}`}
@@ -57,13 +57,30 @@ const ListView = () => {
                               style={{
                                 width: "200px",
                                 height: "200px",
-                                objectFit: "cover",
+                                lineHeight: "200px",
+                                border: "1px solid #ccc",
                                 borderRadius: "20%",
+                                color: "#666",
                               }}
                             />
                           </div>
+                        ) : (
+                          <div
+                            className="text-center"
+                            style={{
+                              width: "200px",
+                              height: "200px",
+                              lineHeight: "200px",
+                              border: "1px solid #ccc",
+                              borderRadius: "20%",
+                              color: "#666",
+                            }}
+                          >
+                            No image
+                          </div>
                         )}
                       </div>
+
                       <div className="form-group mb-2">
                         <label>Name</label>
                         <input
@@ -106,13 +123,15 @@ const ListView = () => {
                           }}
                         />
                       </div>
-                      <div className="form-group ">
+                      <div className="form-group">
                         <label>Phone Number</label>
                         <input
                           type="text"
                           id="phone_no"
                           className="form-control"
-                          value={data.phonenumber || ""}
+                          value={`${data.countryCode || ""} ${
+                            data.phoneNumber || ""
+                          }`}
                           readOnly
                           style={{
                             paddingLeft: "10px",
