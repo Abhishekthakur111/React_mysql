@@ -261,7 +261,7 @@ const Profile = () => {
                                         padding: "8px",
                                         borderRadius: "4px",
                                         border: "1px solid #ced4da",
-                                        backgroundColor: "#fd7a7f",
+                                        border: "1px solid #ccc",
                                       }}
                                       name={field}
                                       id={field}
@@ -299,12 +299,14 @@ const Profile = () => {
                                   />
                                 </div>
 
-                                <button
+                             <div className="d-flex justify-content-end ">
+                                 <button
                                   type="submit"
                                   className="btn btn-primary"
                                 >
                                   Update
                                 </button>
+                             </div>
                               </div>
                             </div>
                           </div>

@@ -7,36 +7,53 @@ const menuItems = [
     to: "/userlist",
     label: "Users",
     icon: "people",
-    activePaths: ["/userDetail"]
+    activePaths: ["/userDetail"],
+  },
+  {
+    to: "/lenderlist",
+    label: "Lenders",
+    icon: "business",
+    activePaths: ["/lenderdetail"],
   },
   {
     to: "/categorylist",
     label: "Categories",
     icon: "grid_view",
-    activePaths: ["/categoryadd", "/updatecategory", "/categoryDetail"]
+    activePaths: ["/categoryadd", "/updatecategory", "/categoryDetail"],
   },
   {
-    to: "/subcategoryList",
-    label: "Sub Categories",
+    to: "/productlist",
+    label: "Products",
     icon: "list",
-    activePaths: ["/subcategoryadd", "/updatesubcategory", '/subcategoryDetail']
+    activePaths: ["/productdetail"],
   },
   {
     to: "/bookinglist",
     label: "Bookings",
     icon: "calendar_today",
-    activePaths: ["/booking"]
+    activePaths: ["/bookingdetail"],
+  },
+  {
+    to: "/transactionlist",
+    label: "Transactions",
+    icon: "attach_money",
+    activePaths: ["/transactiondetail"],
+  },
+   {
+    to: "/ratinglist",
+    label: "Ratings",
+    icon: "star",
+    activePaths: ["/ratingdetail"],
   },
   {
     to: "/contactlist",
     label: "Contacts",
     icon: "lock",
-    activePaths: ["/contactDetail"]
+    activePaths: ["/contactDetail"],
   },
   { to: "/privacypolicy", label: "Privacy Policy", icon: "shield" },
   { to: "/aboutus", label: "About Us", icon: "info" },
-  { to: "/terms&conditions", label: "Terms&Conditions", icon: "article" },
-
+  { to: "/termsconditions", label: "Terms&Conditions", icon: "article" },
 ];
 
 const Sidebar = ({ handleLinkClick }) => {
@@ -49,7 +66,8 @@ const Sidebar = ({ handleLinkClick }) => {
       <li className="nav-item" key={to}>
         <NavLink
           className={({ isActive }) =>
-            `nav-link text-white ${isActive || isActivePath() ? "active bg-gradient-primary" : ""
+            `nav-link text-white ${
+              isActive || isActivePath() ? "active bg-gradient-primary" : ""
             }`
           }
           to={to}
@@ -77,18 +95,19 @@ const Sidebar = ({ handleLinkClick }) => {
         ></i>
         <NavLink className="navbar-brand m-0" to="/dashboard">
           <img
-            src="/assets/img/logo-ct.png"
+            src="/assets/img/logo.png"
             className="navbar-brand-img h-100"
             alt="main_logo"
           />
-          <span className="ms-1 font-weight-bold text-white">Dashboard</span>
+          <span className="ms-1 font-weight-bold text-white">EZRentUS</span>
         </NavLink>
       </div>
       <hr className="horizontal light mt-0 mb-2" />
-      <div className="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
-        <ul className="navbar-nav">
-          {menuItems.map(renderNavItem)}
-        </ul>
+      <div
+        className="collapse navbar-collapse w-auto"
+        id="sidenav-collapse-main"
+      >
+        <ul className="navbar-nav">{menuItems.map(renderNavItem)}</ul>
       </div>
     </aside>
   );

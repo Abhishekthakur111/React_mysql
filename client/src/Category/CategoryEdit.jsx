@@ -7,7 +7,7 @@ const CategoryEdit = () => {
   const { id } = useParams();
   const [data, setData] = useState({ name: "", image: "" });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); 
   const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
   const [newImage, setNewImage] = useState(null);
@@ -64,11 +64,13 @@ const CategoryEdit = () => {
 
       if (!validFormats.includes(file.type)) {
         toast.error("Only JPG and PNG files are allowed.");
+        setImageError("Invalid image format.");
         return;
       }
 
       setNewImage(file);
       setImagePreview(URL.createObjectURL(file));
+      setImageError("");
     } else {
       setData((prevData) => ({
         ...prevData,
@@ -80,7 +82,7 @@ const CategoryEdit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!data.image) {
+    if (!data.image && !newImage) {
       toast.error("Category image is required!");
       return;
     }
@@ -88,12 +90,8 @@ const CategoryEdit = () => {
       toast.error("Category name is required!");
       return;
     }
-    if (nameError) {
-      toast.error("Please fix the name error before submitting!");
-      return;
-    }
-    if (imageError) {
-      toast.error("Please fix the image error before submitting!");
+    if (nameError || imageError) {
+      toast.error("Please fix form errors before submitting!");
       return;
     }
 
@@ -114,13 +112,11 @@ const CategoryEdit = () => {
           navigate("/categorylist");
         }, 1000);
       } else {
-        setError("Failed to update category.");
-        toast.error("Failed to update category.");
+        toast.error(response.data.message || "Failed to update category.");
       }
     } catch (err) {
       const message =
         err?.response?.data?.message || "Error updating category.";
-      setError(message);
       toast.error(message);
     }
   };
@@ -130,15 +126,13 @@ const CategoryEdit = () => {
   };
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+
+  if (error) return <div style={{ color: "red" }}>{error}</div>;
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-      />
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+
       <div className="container-fluid">
         <div className="row">
           <div className="col-12">
@@ -146,20 +140,21 @@ const CategoryEdit = () => {
               <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                 <div className="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-2">
                   <div className="d-flex justify-content-between align-items-center px-3 pt-1">
-                    <h6 className="text-white text-capitalize">
-                      Edit Category
-                    </h6>
+                    <h6 className="text-white text-capitalize">Edit Category</h6>
                   </div>
                 </div>
               </div>
+
               <div className="section-body">
                 <div className="row">
                   <div className="col-12 col-md-12 col-lg-12">
                     <div className="card">
                       <div className="card-body">
                         <form onSubmit={handleSubmit}>
+
+                          {/* Image input */}
                           <div className="form-group col-3">
-                            <label htmlFor="name">Category Image</label>
+                            <label htmlFor="image">Category Image</label>
                             <div className="admin_profile" data-aspect="1/1">
                               {imagePreview && (
                                 <img
@@ -181,28 +176,29 @@ const CategoryEdit = () => {
                                 accept="image/jpeg, image/png"
                                 style={{
                                   paddingLeft: "10px",
-                                  backgroundColor: "#ff8080",
+                                  border: "1px solid #ccc",
                                 }}
                               />
+                              {imageError && (
+                                <div style={{ color: "red", fontSize: "12px" }}>
+                                  {imageError}
+                                </div>
+                              )}
                             </div>
                           </div>
+
+                          {/* Name input */}
                           <div className="form-group mt-3">
                             <label>Name</label>
                             <input
                               type="text"
                               name="name"
                               className="form-control"
-                              value={data.name || ""}
+                              value={data?.name || ""}
                               onChange={handleChange}
-                              onInput={(e) => {
-                                e.target.value = e.target.value.replace(
-                                  /^\s+/g,
-                                  ""
-                                );
-                              }}
                               style={{
                                 paddingLeft: "10px",
-                                backgroundColor: "#ff8080",
+                                border: "1px solid #ccc",
                               }}
                               placeholder="Enter category name"
                             />
@@ -212,12 +208,13 @@ const CategoryEdit = () => {
                               </div>
                             )}
                           </div>
+
                           <div className="text-end mt-4">
                             <button
                               type="submit"
-                              className="btn btn-primary"
+                              className="btn btn-success"
                               style={{ marginRight: "10px" }}
-                              disabled={nameError}
+                              disabled={!!nameError || !!imageError}
                             >
                               Update
                             </button>

@@ -38,8 +38,19 @@ module.exports = {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
             const offset = (page - 1) * limit;
-            const totalCategories = await db.categories.count();
+            const search = req.query.search || "";
+            const whereClause = search
+                ? {
+                    name: {
+                        [db.Sequelize.Op.like]: `%${search}%`,
+                    },
+                }
+                : {};
+
+            const totalCategories = await db.categories.count({ where: whereClause });
+
             const categories = await db.categories.findAll({
+                where: whereClause,
                 offset: offset,
                 limit: limit,
                 order: [["id", "DESC"]],
@@ -89,7 +100,7 @@ module.exports = {
             if (!category) {
                 return helper.error(res, "Category not found");
             }
-            await db.subcategories.destroy({ where: { category_id: id } });
+            await db.products.destroy({ where: { category_id: id } });
             await db.categories.destroy({ where: { id } });
             return helper.success(res, "Category deleted successfully");
         } catch (error) {

@@ -59,9 +59,9 @@ const ContactView = () => {
                           type="text"
                           className="form-control"
                           id="name"
-                          value={data.name || ""}
+                          value={data?.name || ""}
                           readOnly
-                          style={{ paddingLeft: '10px', backgroundColor: '#ff8080' }}
+                          style={{ paddingLeft: '10px', border: "1px solid #ccc", }}
                         />
                       </div>
                       <div className="form-group mb-2">
@@ -70,9 +70,9 @@ const ContactView = () => {
                           type="email"
                           id="email"
                           className="form-control"
-                          value={data.email || ""}
+                          value={data?.email || ""}
                           readOnly
-                          style={{ paddingLeft: '10px', backgroundColor: '#ff8080' }}
+                          style={{ paddingLeft: '10px', border: "1px solid #ccc", }}
                         />
                       </div>
 
@@ -82,11 +82,11 @@ const ContactView = () => {
                           type="text"
                           id="phone_no"
                           className="form-control"
-                           value={`${data.countryCode || ""} ${
-                            data.phoneNumber || ""
+                           value={`${data?.countryCode || ""} ${
+                            data?.phoneNumber || ""
                           }`}
                           readOnly
-                          style={{ paddingLeft: '10px', backgroundColor: '#ff8080' }}
+                          style={{ paddingLeft: '10px', border: "1px solid #ccc", }}
                         />
                       </div>
                       <div className="form-group mb-2">
@@ -94,9 +94,9 @@ const ContactView = () => {
                         <textarea
                           id="message"
                           className="form-control"
-                          value={data.message || ""}
+                          value={data?.message || ""}
                           readOnly
-                          style={{ paddingLeft: '10px', backgroundColor: '#ff8080' }}
+                          style={{ paddingLeft: '10px', border: "1px solid #ccc", }}
                         />
                       </div>
 

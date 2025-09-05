@@ -9,52 +9,66 @@ module.exports = function(sequelize, DataTypes) {
     },
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
-    category_id: {
+    product_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
-    subcategory_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    booking_code: {
+    bookingDate: {
       type: DataTypes.STRING(255),
       allowNull: false,
       defaultValue: ""
     },
-    amount: {
+    returnDate: {
       type: DataTypes.STRING(255),
       allowNull: false,
       defaultValue: ""
-    },
-    no_of_booking: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      defaultValue: ""
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-      defaultValue: "''"
-    },
-    status: {
-      type: DataTypes.ENUM('0','1','2'),
-      allowNull: false,
-      defaultValue: "1",
-      comment: "0=>pending,1=>ongoing,2=>complete"
     },
     location: {
       type: DataTypes.STRING(255),
       allowNull: false,
       defaultValue: ""
+    },
+    longitude: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      defaultValue: ""
+    },
+    latitude: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      defaultValue: ""
+    },
+    price: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      defaultValue: ""
+    },
+    paymentStatus: {
+      type: DataTypes.ENUM('0','1'),
+      allowNull: false,
+      defaultValue: "0",
+      comment: "0=>pending,1=>payemtn done,"
+    },
+    paymentmethod: {
+      type: DataTypes.ENUM('0','1'),
+      allowNull: false,
+      defaultValue: "0",
+      comment: "0 for offline ,1 for online"
+    },
+    status: {
+      type: DataTypes.ENUM('0','1','2','3','4'),
+      allowNull: false,
+      defaultValue: "0",
+      comment: "0=>ordered,1=>recived,2=>return"
     }
   }, {
     sequelize,
     tableName: 'bookings',
     timestamps: true,
-    paranoid: true,
     indexes: [
       {
         name: "PRIMARY",

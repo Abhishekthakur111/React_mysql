@@ -91,7 +91,7 @@ const ListView = () => {
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                            border: "1px solid #ccc",
                           }}
                         />
                       </div>
@@ -105,7 +105,7 @@ const ListView = () => {
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                          border: "1px solid #ccc",
                           }}
                         />
                       </div>
@@ -119,7 +119,7 @@ const ListView = () => {
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                           border: "1px solid #ccc",
                           }}
                         />
                       </div>
@@ -135,7 +135,7 @@ const ListView = () => {
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                           border: "1px solid #ccc",
                           }}
                         />
                       </div>

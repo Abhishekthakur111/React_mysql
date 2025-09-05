@@ -50,58 +50,53 @@ const Navbar = ({ toggleSidebar, closeSidebar }) => {
         toast.error("Error fetching profile data", error);
       }
     };
-  
+
     fetchProfile();
-   
+
     if (location.state?.updated) {
       fetchProfile();
     }
   }, [location.state]);
-  
-  
 
-const logout = async () => {
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "You will be logged out of your account.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#ff8080",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, log out!",
-  });
+  const logout = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#788000",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, log out!",
+    });
 
-  if (result.isConfirmed) {
-    try {
-      await axiosInstance.post(`/logout`);
-      localStorage.removeItem("token");
-      toast.success("Logged out successfully!");
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1000)
-   
-    } catch (error) {
+    if (result.isConfirmed) {
+      try {
+        await axiosInstance.post(`/logout`);
+        localStorage.removeItem("token");
+        toast.success("Logged out successfully!");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1000);
+      } catch (error) {}
     }
-  }
-};
-
+  };
 
   const pathToTitleMap = {
     "/dashboard": "Dashboard",
     "/userlist": "Users",
+    "/lenderlist": "Lenders",
     "/categorylist": "Categories",
     "/privacypolicy": "Privacy Policy",
     "/aboutus": "About Us",
-    "/terms&conditions": "Terms&Conditions",
-    "/subcategory": "Sub Categories",
-    "/bookinglist": "Bookings",
-    "/map": "Map",
+    "/termsconditions": "Terms&Conditions",
     "/changepassword": "Change Password",
-    "/profile":"Profile",
-    '/contactlist':'Contacts',
-    '/categoryadd':'Add Category',
-    '/subcategoryadd': 'Add Sub Category',
-    '/subcategoryList': 'Sub Categories',
+    "/profile": "Profile",
+    "/contactlist": "Contacts",
+    "/categoryadd": "Add Category",
+    "/productlist": "Products",
+    "/bookinglist": "Bookings",
+    "/transactionlist": "Transactions",
+    "/ratinglist": "Ratings",
   };
 
   const currentPath = location.pathname;
@@ -109,25 +104,28 @@ const logout = async () => {
     pathToTitleMap[currentPath] ||
     (currentPath.startsWith("/userDetail")
       ? "User Details"
-      : currentPath.startsWith("/booking")
-      ? "Booking Details"
-      : currentPath.startsWith("/subcategory")
-      ? "Sub Category Details"
+      : currentPath.startsWith("/lenderdetail")
+      ? "Lender Details"
       : currentPath.startsWith("/categoryDetail")
       ? "Category Details"
       : currentPath.startsWith("/updatecategory")
       ? "Edit Category"
-      : currentPath.startsWith("/updatesubcategory")
-      ? "Edit Sub Category"
+      : currentPath.startsWith("/productdetail/")
+      ? "Product Details"
       : currentPath.startsWith("/contactDetail/")
       ? "Contact Details"
-       : currentPath.startsWith("/categoryadd")
+      : currentPath.startsWith("/bookingdetail/")
+      ? "Booking Details"
+      : currentPath.startsWith("/categoryadd")
       ? "Add Category"
-      
+      : currentPath.startsWith("/transactiondetail/")
+      ? "Transaction Details"
+      : currentPath.startsWith("/ratingdetail/")
+      ? "Rating Details"
       : "");
 
   const handleLinkClick = () => {
-    closeSidebar(); 
+    closeSidebar();
   };
 
   return (
@@ -135,10 +133,9 @@ const logout = async () => {
       className="navbar navbar-main navbar-expand-lg px-0 mx-4 mt-3 shadow-none border-radius-xl"
       id="navbarBlur"
       data-scroll="true"
-      style={{ backgroundColor: "#fe7d80" }}
+      style={{ backgroundColor: "#788000" }}
     >
       <div className="container-fluid d-flex justify-content-between align-items-center">
-       
         <button
           onClick={toggleSidebar}
           className="navbar-toggler d-xl-none"
@@ -152,12 +149,14 @@ const logout = async () => {
           <i className="fas fa-bars"></i>
         </button>
         <div aria-label="breadcrumb">
-          <h3 className="font-weight-bolder mb-0 d-none d-lg-block">{currentTitle}</h3>
+          <h3 className="font-weight-bolder mb-0 d-none d-lg-block">
+            {currentTitle}
+          </h3>
         </div>
 
         <ul className="navbar-nav navbar-right d-flex align-items-center">
           <li className="d-flex align-items-center ms-auto">
-            <h6 className="mb-0">{name}</h6 >
+            <h6 className="mb-0">{name}</h6>
             <div className="dropdown" ref={dropdownRef}>
               <Link
                 to="#"
@@ -178,7 +177,6 @@ const logout = async () => {
                     dropdownOpen ? "show" : ""
                   }`}
                   style={{
-                    backgroundColor: "pink",
                     position: "absolute",
                     top: "15px",
                     borderRadius: "0.5rem",
@@ -191,7 +189,7 @@ const logout = async () => {
                     className="dropdown-item has-icon text-success"
                     onClick={() => {
                       closeDropdown();
-                      handleLinkClick(); 
+                      handleLinkClick();
                     }}
                   >
                     <i className="far fa-user" /> Profile
@@ -201,7 +199,7 @@ const logout = async () => {
                     className="dropdown-item has-icon text-info"
                     onClick={() => {
                       closeDropdown();
-                      handleLinkClick(); 
+                      handleLinkClick();
                     }}
                   >
                     <i className="fas fa-cogs" /> Change Password

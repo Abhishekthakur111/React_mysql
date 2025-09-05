@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -13,25 +13,32 @@ const TermsConditions = () => {
   const [submitError, setSubmitError] = useState("");
   const navigate = useNavigate();
 
+  const hasShownError = useRef(false);
+
   useEffect(() => {
-    const fetchPrivacyPolicy = async () => {
+    const fetchTermsConditions = async () => {
       try {
-        const response = await axiosInstance.get(`/terms&conditions`);
+        const response = await axiosInstance.get(`/termsconditions`);
         const { data } = response.data;
         setTitle(data.title || "");
         setContent(data.content || "<p><br></p>");
+        hasShownError.current = false; 
       } catch (error) {
-        toast.error("Please try again.");
+        if (!hasShownError.current) {
+          toast.error("Error fetching Terms & Conditions. Please try again.");
+          hasShownError.current = true;
+        }
       }
     };
 
-    fetchPrivacyPolicy();
+    fetchTermsConditions();
   }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (content.trim() === "<p><br></p>") {
-      setError("terms&Conditions cannot be empty.");
+      setError("Terms & Conditions cannot be empty.");
       return;
     }
 
@@ -39,15 +46,15 @@ const TermsConditions = () => {
     setSubmitError("");
 
     try {
-      await axiosInstance.post(`/terms&conditions`, {
+      await axiosInstance.post(`/termsconditions`, {
         title,
         content,
       });
-      toast.success("Terms&Conditions updated successfully");
-      navigate(`/terms&conditions`);
+      toast.success("Terms & Conditions updated successfully");
+      navigate("/termsconditions");
     } catch (error) {
-      setSubmitError("Error submitting terms&conditons. Please try again.");
-      toast.error("Error submitting terms&conditons. Please try again.");
+      setSubmitError("Error submitting Terms & Conditions. Please try again.");
+      toast.error("Error submitting Terms & Conditions. Please try again.");
     }
   };
 
@@ -64,7 +71,7 @@ const TermsConditions = () => {
         draggable
         pauseOnHover
       />
-      <div className="container-fluid ">
+      <div className="container-fluid">
         <div className="row">
           <div className="col-12">
             <div className="card my-4">
@@ -72,7 +79,7 @@ const TermsConditions = () => {
                 <div className="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-2">
                   <div className="d-flex justify-content-between align-items-center px-3 pt-1">
                     <h6 className="text-white text-capitalize">
-                      Terms&Conditions
+                      Terms & Conditions
                     </h6>
                   </div>
                 </div>
@@ -90,7 +97,7 @@ const TermsConditions = () => {
                         readOnly
                         style={{
                           paddingLeft: "10px",
-                          backgroundColor: "#ff8080",
+                          border: "1px solid #ccc",
                         }}
                       />
                     </div>
@@ -103,7 +110,11 @@ const TermsConditions = () => {
                       <div style={{ position: "relative" }}>
                         <ReactQuill
                           id="content"
-                          style={{ height: "400px", marginBottom: "50px",color:'black'  }}
+                          style={{
+                            height: "400px",
+                            marginBottom: "50px",
+                            color: "black",
+                          }}
                           theme="snow"
                           value={content}
                           onChange={setContent}
@@ -131,7 +142,7 @@ const TermsConditions = () => {
                               fontStyle: "italic",
                             }}
                           >
-                            Terms&Conditons cannot be empty.
+                            Terms & Conditions cannot be empty.
                           </div>
                         )}
                       </div>
@@ -146,9 +157,9 @@ const TermsConditions = () => {
                   <div className="col-12 d-flex justify-content-end">
                     <button
                       type="submit"
-                      className="btn "
+                      className="btn"
                       style={{
-                        backgroundColor: "#ff8080",
+                        backgroundColor: "#788000",
                         color: "white",
                         marginTop: "20px",
                       }}

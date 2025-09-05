@@ -1,30 +1,41 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from '../Config';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { axiosInstance } from "../Config";
 
-export const fetchUsers = createAsyncThunk('users/fetchUsers', async ({ page, limit }) => {
-  const response = await axiosInstance.get(`/userlist?page=${page}&limit=${limit}`);
-  return {
-    users: response.data.body.data,
-    totalPages: response.data.body.totalPages, 
-  };
-});
-
-export const deleteUser = createAsyncThunk('users/deleteUser', async (id) => {
+export const fetchUsers = createAsyncThunk(
+  "users/fetchUsers",
+  async ({ page = 1, limit = 10, search = "" }) => {
+    const response = await axiosInstance.get(
+      `/userlist?page=${page}&limit=${limit}&search=${encodeURIComponent(
+        search
+      )}`
+    );
+    return {
+      users: response.data.body.data,
+      totalPages: response.data.body.totalPages,
+    };
+  }
+);
+export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
   await axiosInstance.post(`/userdelete/${id}`);
-  return id; 
+  return id;
 });
 
 export const toggleUserStatus = createAsyncThunk(
-  'users/toggleUserStatus',
+  "users/toggleUserStatus",
   async ({ id, currentStatus }) => {
-    const newStatus = currentStatus === '0' ? '1' : '0';
-    const response = await axiosInstance.post('/userstatus', { id, status: newStatus });
-    return response.data.success ? { id, newStatus } : { id, newStatus: currentStatus };
+    const newStatus = currentStatus === "0" ? "1" : "0";
+    const response = await axiosInstance.post("/userstatus", {
+      id,
+      status: newStatus,
+    });
+    return response.data.success
+      ? { id, newStatus }
+      : { id, newStatus: currentStatus };
   }
 );
 
 const userSlice = createSlice({
-  name: 'users',
+  name: "users",
   initialState: {
     users: [],
     error: null,

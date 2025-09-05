@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
-import { axiosInstance } from '../Config';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import { axiosInstance } from "../Config";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Password = () => {
-  const navigate = useNavigate();
-  const [password, setPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -19,62 +18,70 @@ const Password = () => {
 
   const toggleShowPassword = () => setShowPassword((prev) => !prev);
   const toggleShowNewPassword = () => setShowNewPassword((prev) => !prev);
-  const toggleShowConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
+  const toggleShowConfirmPassword = () =>
+    setShowConfirmPassword((prev) => !prev);
 
-const reset = async (e) => {
-  e.preventDefault();
+  const reset = async (e) => {
+    e.preventDefault();
 
-  if (newPassword.length < 5 || newPassword.length > 50) {
-    toast.error("New password must be between 5 and 50 characters");
-    return;
-  }
-
-  if (newPassword !== confirmPassword) {
-    toast.error("New password and confirm password do not match");
-    return;
-  }
-
-  if (password === newPassword) {
-    toast.error("New password cannot be the same as the old password");
-    return;
-  }
-
-  const token = localStorage.getItem('token');
-  if (!token) {
-    toast.error("No token found. Please log in again.");
-    return;
-  }
-
-  try {
-    const response = await axiosInstance.post(
-      `/updatepassword`,
-      { password, newPassword },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    if (response.data.success) {
-      localStorage.setItem('token', response.data.body.token);
-      toast.success("Your password was reset successfully");
-      navigate("/");
-    } else {
-      toast.error(response.data.message || "Password reset failed");
+    if (newPassword.length < 5 || newPassword.length > 50) {
+      toast.error("New password must be between 5 and 50 characters");
+      return;
     }
-  } catch (error) {
-    toast.error((error.response?.data?.message || error.message));
-  }
-};
 
+    if (newPassword !== confirmPassword) {
+      toast.error("New password and confirm password do not match");
+      return;
+    }
+
+    if (password === newPassword) {
+      toast.error("New password cannot be the same as the old password");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("No token found. Please log in again.");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post(
+        `/updatepassword`,
+        { password, newPassword },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.body.token);
+        toast.success("Your password was reset successfully");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1000);
+      } else {
+        toast.error(response.data.message || "Password reset failed");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
+  };
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+      />
       <div className="container-fluid">
         <div className="row">
           <div className="col-12">
             <div className="card my-4">
               <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                 <div className="bg-gradient-primary shadow-primary border-radius-lg pt-3 pb-2">
-                  <h6 className="text-white text-capitalize ps-3">Change Password</h6>
+                  <h6 className="text-white text-capitalize ps-3">
+                    Change Password
+                  </h6>
                 </div>
               </div>
               <form onSubmit={reset} className="mt-4">
@@ -90,10 +97,14 @@ const reset = async (e) => {
                       required
                       minLength={5}
                       maxLength={50}
-                      style={{backgroundColor:'#fd7a7f', paddingLeft:"10px"}}
-                      placeholder='Enter old password'
+                      style={{ border: "1px solid #ccc", paddingLeft: "10px" }}
+                      placeholder="Enter old password"
                     />
-                    <span className="input-group-text mx-3" onClick={toggleShowPassword} style={{ cursor: 'pointer' }}>
+                    <span
+                      className="input-group-text mx-3"
+                      onClick={toggleShowPassword}
+                      style={{ cursor: "pointer" }}
+                    >
                       {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </span>
                   </div>
@@ -110,10 +121,14 @@ const reset = async (e) => {
                       required
                       minLength={5}
                       maxLength={50}
-                      style={{backgroundColor:'#fd7a7f', paddingLeft:"10px"}}
-                      placeholder='Enter new password'
+                      style={{ border: "1px solid #ccc", paddingLeft: "10px" }}
+                      placeholder="Enter new password"
                     />
-                    <span className="input-group-text mx-3" onClick={toggleShowNewPassword} style={{ cursor: 'pointer' }}>
+                    <span
+                      className="input-group-text mx-3"
+                      onClick={toggleShowNewPassword}
+                      style={{ cursor: "pointer" }}
+                    >
                       {showNewPassword ? <FaEyeSlash /> : <FaEye />}
                     </span>
                   </div>
@@ -130,16 +145,22 @@ const reset = async (e) => {
                       required
                       minLength={5}
                       maxLength={50}
-                      style={{backgroundColor:'#fd7a7f', paddingLeft:"10px"}}
-                       placeholder='Enter confirom password'
+                      style={{ border: "1px solid #ccc", paddingLeft: "10px" }}
+                      placeholder="Enter confirm password"
                     />
-                    <span className="input-group-text mx-3" onClick={toggleShowConfirmPassword} style={{ cursor: 'pointer' }}>
+                    <span
+                      className="input-group-text mx-3"
+                      onClick={toggleShowConfirmPassword}
+                      style={{ cursor: "pointer" }}
+                    >
                       {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                     </span>
                   </div>
                 </div>
-                <div className="d-flex justify-content-start mx-3">
-                  <button type="submit" className="btn btn-primary">Update Password</button>
+                <div className="d-flex justify-content-end mx-3">
+                  <button type="submit" className="btn btn-primary">
+                    Update Password
+                  </button>
                 </div>
               </form>
             </div>

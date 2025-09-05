@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -13,15 +13,22 @@ const PrivacyPolicy = () => {
   const [submitError, setSubmitError] = useState("");
   const navigate = useNavigate();
 
+  const hasShownError = useRef(false);
+
   useEffect(() => {
     const fetchPrivacyPolicy = async () => {
       try {
         const response = await axiosInstance.get(`/privacypolicy`);
+        console.log(response,'/////////////');
         const { data } = response.data;
         setTitle(data.title || "");
         setContent(data.content || "<p><br></p>");
+        hasShownError.current = false; 
       } catch (error) {
-        toast.error("Please try again.");
+        if (!hasShownError.current) {
+          toast.error("Error fetching privacy policy data. Please try again.");
+          hasShownError.current = true;
+        }
       }
     };
 
@@ -64,7 +71,7 @@ const PrivacyPolicy = () => {
         draggable
         pauseOnHover
       />
-      <div className="container-fluid ">
+      <div className="container-fluid">
         <div className="row">
           <div className="col-12">
             <div className="card my-4">
@@ -90,7 +97,7 @@ const PrivacyPolicy = () => {
                         readOnly
                         style={{
                           paddingLeft: "10px",
-                          backgroundColor: "#ff8080",
+                          border: "1px solid #ccc",
                         }}
                       />
                     </div>
@@ -103,7 +110,11 @@ const PrivacyPolicy = () => {
                       <div style={{ position: "relative" }}>
                         <ReactQuill
                           id="content"
-                          style={{ height: "400px", marginBottom: "50px",color:'black'  }}
+                          style={{
+                            height: "400px",
+                            marginBottom: "50px",
+                            color: "black",
+                          }}
                           theme="snow"
                           value={content}
                           onChange={setContent}
@@ -146,9 +157,9 @@ const PrivacyPolicy = () => {
                   <div className="col-12 d-flex justify-content-end">
                     <button
                       type="submit"
-                      className="btn "
+                      className="btn"
                       style={{
-                        backgroundColor: "#ff8080",
+                        backgroundColor: "#788000",
                         color: "white",
                         marginTop: "20px",
                       }}

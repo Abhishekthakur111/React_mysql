@@ -18,25 +18,24 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: ""
     },
     countryCode: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(20),
       allowNull: false,
       defaultValue: ""
     },
     phoneNumber: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(100),
       allowNull: false,
       defaultValue: ""
     },
     message: {
       type: DataTypes.TEXT,
       allowNull: false,
-      defaultValue: "''"
+      defaultValue: ""
     }
   }, {
     sequelize,
     tableName: 'contactus',
     timestamps: true,
-    paranoid: true,
     indexes: [
       {
         name: "PRIMARY",

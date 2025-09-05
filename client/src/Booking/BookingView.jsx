@@ -40,7 +40,7 @@ const BookingView = () => {
             <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
               <div className="bg-gradient-primary shadow-primary border-radius-lg pt-2 pb-2">
                 <div className="d-flex justify-content-between align-items-center px-3 pt-1">
-                  <h6 className="text-white text-capitalize">Booking Detail</h6>
+                  <h6 className="text-white text-capitalize">Booking Details</h6>
                 </div>
               </div>
             </div>
@@ -55,108 +55,138 @@ const BookingView = () => {
                           type="text"
                           id="userName"
                           className="form-control"
-                          value={booking.user?.name || "Unknown"}
+                          value={booking?.user?.name || ""}
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                            border: "1px solid #ccc",
                           }}
                         />
                       </div>
                       <div className="form-group mb-2">
-                        <label>Category </label>
+                        <label>Category Name</label>
                         <input
                           type="text"
                           id="carName"
                           className="form-control"
-                          value={booking.category?.name || "Unknown"}
+                          value={booking?.products?.cat?.name || ""}
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                            border: "1px solid #ccc",
                           }}
                         />
                       </div>
                       <div className="form-group mb-2">
-                        <label>Sub Category</label>
+                        <label>Product Name</label>
                         <input
                           type="text"
-                          id="serviceName"
+                          id="userName"
                           className="form-control"
-                          value={booking.subCategory?.name || "Unknown"}
+                          value={booking?.products?.name || ""}
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                            border: "1px solid #ccc",
                           }}
                         />
                       </div>
                       <div className="form-group mb-2">
-                        <label>Booking Code</label>
+                        <label>location</label>
                         <input
                           type="text"
                           className="form-control"
-                          id="bookingCode"
-                          value={booking.booking_code || "N/A"}
+                          id="location"
+                          value={booking?.location || ""}
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                            border: "1px solid #ccc",
                           }}
                         />
                       </div>
                       <div className="form-group mb-2">
-                        <label>No of Booking</label>
+                        <label>Booking Date</label>
                         <input
                           type="text"
                           id="noOfBooking"
                           className="form-control"
-                          value={booking.no_of_booking || "N/A"}
+                          value={booking?.bookingDate || ""}
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                            border: "1px solid #ccc",
                           }}
                         />
                       </div>
                       <div className="form-group mb-2">
-                        <label>Location</label>
+                        <label>Return Date</label>
                         <input
                           type="text"
-                          id="location"
+                          id="returnDate"
                           className="form-control"
-                          value={booking.location || "N/A"}
+                          value={booking?.returnDate || ""}
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
-                          }}
-                        />
-                      </div>
-                      <div className="form-group mb-2">
-                        <label>Description</label>
-                        <textarea
-                          id="description"
-                          className="form-control"
-                          value={booking.description || "N/A"}
-                          readOnly
-                          style={{
-                            paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                            border: "1px solid #ccc",
                           }}
                         />
                       </div>
                       <div className="form-group ">
-                        <label>Amount</label>
+                        <label>Price</label>
                         <input
                           type="text"
                           id="amount"
                           className="form-control"
-                          value={`$${booking.amount || "N/A"}`}
+                          value={`$${booking?.price || ""}`}
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                            border: "1px solid #ccc",
+                          }}
+                        />
+                      </div>
+                      <div className="form-group ">
+                        <label>Payment</label>
+                        <input
+                          type="text"
+                          id="paymentStatus"
+                          className="form-control"
+                          value={
+                            booking?.paymentStatus == "0"
+                              ? "Pending"
+                              : booking?.paymentStatus == "1"
+                              ? "Completed"
+                              : ""
+                          }
+                          readOnly
+                          style={{
+                            paddingLeft: "10px",
+                            border: "1px solid #ccc",
+                          }}
+                        />
+                      </div>
+
+                      <div className="form-group ">
+                        <label>Status</label>
+                        <input
+                          type="text"
+                          id="status"
+                          className="form-control"
+                          value={
+                            booking?.status == "0"
+                              ? "Ordered"
+                              : booking?.status == "1"
+                              ? "Received"
+                              : booking?.status == "2"
+                              ? "Returned"
+                              : ""
+                          }
+                          readOnly
+                          style={{
+                            paddingLeft: "10px",
+                            border: "1px solid #ccc",
                           }}
                         />
                       </div>

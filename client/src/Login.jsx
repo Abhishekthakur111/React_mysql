@@ -8,11 +8,13 @@ import { axiosInstance } from "./Config";
 
 const Login = () => {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,7 +23,7 @@ const Login = () => {
 
   const validatePassword = (password) => {
     setPasswordError(
-      password.length >= 6 ? "" : "Password must be at least 6 characters long"
+      password.length >= 5 ? "" : "Password must be at least 5 characters long."
     );
   };
 
@@ -40,27 +42,30 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!emailError && !passwordError) {
-      try {
-        const response = await axiosInstance.post("/login", {
-          email,
-          password,
-        });
+    if (emailError || passwordError || !email || !password || loading) return;
 
-        localStorage.setItem("token", response.data.body.token);
-        navigate("/dashboard", {replace:true});
-        setTimeout(() => {
-          toast.success("Login successful!");
-        }, 1000);
-      } catch (error) {
-        if (error.response) {
-          toast.error(
-            error.response.data.message || "Invalid email or password"
-          );
-        } else {
-          toast.error("Something went wrong. Please try again.");
-        }
+    setLoading(true);
+
+    try {
+      const response = await axiosInstance.post("/login", {
+        email,
+        password,
+      });
+
+      localStorage.setItem("token", response.data.body.token);
+
+      navigate("/dashboard", { replace: true });
+      setTimeout(() => {
+        toast.success("Login successful!");
+      }, 1000);
+    } catch (error) {
+      if (error.response) {
+        toast.error(error.response.data.message || "Invalid email or password");
+      } else {
+        toast.error("Something went wrong. Please try again.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,42 +77,38 @@ const Login = () => {
           <div
             className="page-header align-items-start min-vh-100"
             style={{
-              backgroundImage:
-                "url('https://images.unsplash.com/photo-1497294815431-9365093b7331?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')",
+              backgroundImage: "url('/assets/img/ezrentus.png')",
             }}
           >
             <span className="mask opacity-6"></span>
             <div className="container my-auto">
               <div className="row">
-                <div className="col-lg-4 col-md-8 col-12 mx-auto">
-                  <div className="card z-index-0 fadeIn3 fadeInBottom">
-                    <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                <div className="col-lg-6 col-md-8 col-12 mx-auto">
+                  <div className="card z-index-0 fadeIn3 fadeInBottom bg-transparent shadow-none">
+                    {/* <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                       <div className="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
                         <h4 className="text-white font-weight-bolder text-center mt-2 mb-0">
-                          Sign in
+                        
                         </h4>
-                        <div className="row mt-3">
-                          <div className="col-2 text-center ms-auto">
-                            <Link className="btn btn-link px-3" to="">
-                              <i className="fab fa-facebook text-white text-lg"></i>
-                            </Link>
-                          </div>
-                          <div className="col-2 text-center px-1">
-                            <Link className="btn btn-link px-3" to="">
-                              <i className="fab fa-github text-white text-lg"></i>
-                            </Link>
-                          </div>
-                          <div className="col-2 text-center me-auto">
-                            <Link className="btn btn-link px-3" to="">
-                              <i className="fab fa-google text-white text-lg"></i>
-                            </Link>
-                          </div>
-                        </div>
                       </div>
-                    </div>
-                    <div className="card-body">
+                    </div> */}
+                    <div className="card-body login-page">
+                      <img
+                        src="/assets/img/logo.png"
+                        alt="logo"
+                        className="img-fluid mb-3 m-auto d-block"
+                        style={{ maxWidth: "100px" }}
+                      />
+                      <label
+                        className="d-flex justify-content-center"
+                        style={{ color: "white", fontSize: "20px" }}
+                      >
+                        {" "}
+                        Welcome to Admin 👋
+                      </label>
                       <form onSubmit={handleSubmit} className="text-start">
-                        <div className="input-group input-group-outline mb-2">
+                        <label className="m-0">E-Mail</label>
+                        <div className="input-group input-group-outline mb-2 mt-1">
                           <span className="input-group-text px-2">
                             <span className="material-icons">mail</span>
                           </span>
@@ -117,14 +118,14 @@ const Login = () => {
                             value={email}
                             onChange={handleChangeEmail}
                             required
-                            placeholder="Email"
+                            placeholder="E-mail"
                           />
                         </div>
                         {emailError && (
-                          <small className="text-danger ">{emailError}</small>
+                          <small className="text-danger">{emailError}</small>
                         )}
-
-                        <div className="input-group input-group-outline mb-2 mt-2">
+                        <label className="m-0">Password</label>
+                        <div className="input-group input-group-outline mb-2 mt-1 ">
                           <input
                             type={showPassword ? "text" : "password"}
                             className="form-control ps-2"
@@ -152,8 +153,9 @@ const Login = () => {
                           <button
                             type="submit"
                             className="btn bg-gradient-primary w-100 my-4 mb-2"
+                            disabled={loading}
                           >
-                            Sign in
+                            {loading ? "Signing in..." : "Sign in"}
                           </button>
                         </div>
                       </form>

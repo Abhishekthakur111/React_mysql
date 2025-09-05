@@ -75,13 +75,12 @@ module.exports = {
             }
             const isPasswordValid = await bcrypt.compare(password, userData.password);
             if (!isPasswordValid) {
-                return helper.error(res, "Incorrect Password");
+                return helper.error(res, "Invalid Email and Password");
             }
             const secret = process.env.JWT_SECRET;
             const token = jwt.sign(
                 { id: userData.id, name: userData.name, email: userData.email },
                 secret,
-                { expiresIn: "10h" }
             );
             const userResponse = { ...userData.toJSON() };
             delete userResponse.password;
@@ -138,19 +137,19 @@ module.exports = {
         try {
             const { password, newPassword } = req.body;
             const token = req.headers.authorization?.split(' ')[1];
-    
+
             if (!token) {
                 return helper.error(res, "No token provided");
             }
-    
+
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const userId = decoded.id;
-    
+
             const find_data = await db.users.findByPk(userId);
             if (!find_data) {
                 return helper.error(res, "User not found");
             }
-    
+
             const isPasswordMatch = await bcrypt.compare(password, find_data.password);
             if (!isPasswordMatch) {
                 return helper.error(res, "Old password is incorrect");
@@ -159,18 +158,18 @@ module.exports = {
             if (isNewSameAsOld) {
                 return helper.error(res, "New password cannot be the same as the old password");
             }
-    
+
             const hashedNewPassword = await bcrypt.hash(newPassword, 10);
             await db.users.update(
                 { password: hashedNewPassword },
                 { where: { id: userId } }
             );
-    
+
             return helper.success(res, "Password changed successfully");
         } catch (error) {
             return helper.error(res, error.message);
         }
-    },    
+    },
     logout: async (req, res) => {
         try {
             return helper.success(res, "Logged out successfully. Please clear the token on the client side.");
@@ -181,17 +180,15 @@ module.exports = {
     dashboard: async (req, res) => {
         try {
             let userCount = await db.users.count({ where: { role: "1" } });
-            let data = await db.categories.count();
-            let subdata = await db.subcategories.count();
-            let databooking = await db.bookings.count();
-            let datacontact = await db.contactus.count();
+            let lenderCount = await db.users.count({ where: { role: "2" } });
+            let categories = await db.categories.count();
+            let productCount = await db.products.count();
 
             return helper.success(res, "Dashboard data fetched successfully", {
                 userCount,
-                data,
-                subdata,
-                databooking,
-                datacontact,
+                lenderCount,
+                categories,
+                productCount
             });
         } catch (error) {
             return helper.error(res, "Error fetching dashboard data", error);
@@ -214,18 +211,28 @@ module.exports = {
                             },
                         },
                     });
+                    const lenderCount = await db.users.count({
+                        where: {
+                            role: "2",
+                            createdAt: {
+                                [Op.between]: [startOfMonth, endOfMonth],
+                            },
+                        },
+                    });
 
-                    return userCount;
+                    return { userCount, lenderCount };
                 })
             );
 
+            const usersData = data.map(item => item.userCount);
+            const lendersData = data.map(item => item.lenderCount);
+
             res.json({
-                data,
+                data: { users: usersData, lenders: lendersData },
                 categories,
             });
         } catch (error) {
             return helper.error(res, "Error fetching chart data", error);
         }
     },
-
 }

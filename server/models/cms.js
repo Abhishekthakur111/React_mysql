@@ -8,9 +8,9 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     type: {
-      type: DataTypes.ENUM('1','2','3'),
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: "1"
+      defaultValue: 1
     },
     title: {
       type: DataTypes.STRING(255),
@@ -19,14 +19,12 @@ module.exports = function(sequelize, DataTypes) {
     },
     content: {
       type: DataTypes.TEXT,
-      allowNull: false,
-      defaultValue: "''"
+      allowNull: false
     }
   }, {
     sequelize,
     tableName: 'cms',
     timestamps: true,
-    paranoid: true,
     indexes: [
       {
         name: "PRIMARY",

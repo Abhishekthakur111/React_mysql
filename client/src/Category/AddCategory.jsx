@@ -132,7 +132,7 @@ const AddCategory = () => {
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="card-body">
-                  <div className="form-group col-3 mb-2 bg-ff8080">
+                  <div className="form-group col-3 mb-2 bg-788000">
                     <label htmlFor="name">Category Image</label>
                     <div className="admin_profile mt-2" data-aspect="1/1">
                       {imagePreview && (
@@ -154,7 +154,7 @@ const AddCategory = () => {
                         onChange={handleChange}
                         style={{
                           paddingLeft: "10px",
-                          backgroundColor: "#ff8080",
+                          border: "1px solid #ccc",
                         }}
                       />
                       {imageError && (
@@ -175,7 +175,7 @@ const AddCategory = () => {
                       }}
                       style={{
                         paddingLeft: "10px",
-                        backgroundColor: "#ff8080",
+                        border: "1px solid #ccc",
                       }}
                       placeholder="Enter category name"
                     />
@@ -188,7 +188,7 @@ const AddCategory = () => {
                 <div className="mx-4 text-end">
                   <button
                     type="submit"
-                    className="btn btn-primary"
+                    className="btn btn-success"
                     style={{ marginRight: "10px" }}
                   >
                     Add

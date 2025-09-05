@@ -3,8 +3,11 @@ import ReactApexChart from "react-apexcharts";
 import { axiosInstance } from "./Config";
 import { toast, ToastContainer } from "react-toastify";
 
-const ApexChart = () => {
-  const [series, setSeries] = useState([{ name: "Users", data: [] }]);
+const ApexChartLender = () => {
+  const [series, setSeries] = useState([
+    { name: "Users", data: [] },
+    { name: "Lenders", data: [] },
+  ]);
   const [options, setOptions] = useState({
     chart: {
       height: 350,
@@ -13,7 +16,7 @@ const ApexChart = () => {
         show: false,
       },
     },
-    colors: ["#ff8080"],
+    colors: ["#1E90FF", "#32CD32"],
     plotOptions: {
       bar: {
         borderRadius: 10,
@@ -28,11 +31,11 @@ const ApexChart = () => {
       offsetY: -20,
       style: {
         fontSize: "12px",
-        colors: ["#ff8080"],
+        colors: ["#1E90FF", "#32CD32"], 
       },
     },
     xaxis: {
-      categories: [], 
+      categories: [],
       position: "bottom",
       axisBorder: {
         show: true,
@@ -77,21 +80,23 @@ const ApexChart = () => {
         const response = await axiosInstance.post(`/chartdata`);
         const { data, categories } = response.data;
 
-        if (!Array.isArray(data) || !Array.isArray(categories)) {
+        if (!Array.isArray(data.users) || !Array.isArray(data.lenders) || !Array.isArray(categories)) {
+          toast.error("Invalid data received.");
           return;
         }
-
-        setSeries([{ name: "Users", data }]);
-
+        setSeries([
+          { name: "Users", data: data.users },
+          { name: "Lenders", data: data.lenders },
+        ]);
         setOptions((prevOptions) => ({
           ...prevOptions,
           xaxis: {
             ...prevOptions.xaxis,
-            categories: categories || [], 
+            categories: categories || [],
           },
         }));
       } catch (error) {
-        toast.error("Error fetching data:", error);
+        toast.error("Error fetching data: " + error.message);
       }
     };
 
@@ -99,24 +104,20 @@ const ApexChart = () => {
   }, []);
 
   return (
-       <>
-        <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-          />
-    <div className="col-12">
-      <div className="card card-statistics">
-        <div className="card-header">
-          <h4 className="card-title">Users Chart</h4>
-        </div>
-        <div className="card-body">
-          <ReactApexChart options={options} series={series} type="bar" height={300} />
+    <>
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+      <div className="col-12">
+        <div className="card card-statistics">
+          <div className="card-header">
+            <h4 className="card-title">Users & Lenders Chart</h4>
+          </div>
+          <div className="card-body">
+            <ReactApexChart options={options} series={series} type="bar" height={300} />
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 };
 
-export default ApexChart;
+export default ApexChartLender;

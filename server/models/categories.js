@@ -13,14 +13,15 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: ""
     },
     image: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(255),
       allowNull: false,
-      defaultValue: "''"
+      defaultValue: ""
     },
     status: {
       type: DataTypes.ENUM('0','1'),
       allowNull: false,
-      defaultValue: "1"
+      defaultValue: "0",
+      comment: "0=>inactive,1=>active"
     }
   }, {
     sequelize,

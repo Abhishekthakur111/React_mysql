@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { axiosInstance } from "../Config";
 import Pagination from "@mui/material/Pagination";
@@ -10,57 +10,68 @@ import Stack from "@mui/material/Stack";
 const BookingList = () => {
   const [bookings, setBookings] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(""); 
   const [loading, setLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   const [statusOptions] = useState([
-    { value: "0", label: "Pending" },
-    { value: "1", label: "Ongoing" },
-    { value: "2", label: "Completed" },
+    { value: "0", label: "Ordered" },
+    { value: "1", label: "Received" },
+    { value: "2", label: "Returned" },
   ]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10;
 
-  useEffect(() => {
-    fetchData(currentPage);
-  }, [currentPage]);
 
-  const fetchData = async () => {
-    setLoading(true);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+      setCurrentPage(1); 
+    }, 500); 
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+
+  useEffect(() => {
+    fetchData(currentPage, debouncedSearch);
+  }, [currentPage, debouncedSearch]);
+
+  const fetchData = async (page, search = "") => {
+    if (bookings.length === 0) {
+      setLoading(true);
+    } else {
+      setIsSearching(true);
+    }
+
     try {
       const response = await axiosInstance.get(
-        `/bookinglist?page=${currentPage}&limit=${limit}`
+        `/bookinglist?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
       );
       if (response.data.success) {
         setBookings(response.data.body.data);
         setTotalPages(response.data.body.totalPages);
       } else {
-        Swal.fire(
-          "Error",
-          response.data.message || "Failed to load bookings",
-          "error"
-        );
+        Swal.fire("Error", response.data.message || "Failed to load bookings", "error");
       }
     } catch (error) {
       Swal.fire(
         "Error",
-        error.response?.data?.message ||
-        "An error occurred while fetching the booking list",
+        error.response?.data?.message || "An error occurred while fetching the booking list",
         "error"
       );
     } finally {
       setLoading(false);
+      setIsSearching(false);
     }
   };
+
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
   };
-  const handleSearch = (e) => {
+
+  const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
-
-  const filteredBookings = bookings.filter((booking) =>
-    booking.booking_code.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const deleteUser = async (id) => {
     const result = await Swal.fire({
@@ -75,12 +86,8 @@ const BookingList = () => {
 
     if (result.isConfirmed) {
       try {
-        await axiosInstance.delete(`/bookingdelete/${id}`);
-        const updatedBookings = bookings.filter((booking) => booking.id !== id);
-        setBookings(updatedBookings);
-        if (updatedBookings.length === 0 && currentPage > 1) {
-          setCurrentPage(currentPage - 1);
-        }
+        await axiosInstance.post(`/bookingdelete/${id}`);
+        fetchData(currentPage, debouncedSearch);
         Swal.fire("Deleted!", "Booking has been deleted.", "success");
       } catch (error) {
         Swal.fire(
@@ -94,45 +101,9 @@ const BookingList = () => {
     }
   };
 
-  const handleStatusChange = async (bookingId, newStatus) => {
-    try {
-      const response = await axiosInstance.post(`/updatebookingstatus`, {
-        id: bookingId,
-        status: newStatus,
-      });
-      if (response.data.success) {
-        toast.success("Status updated successfully");
-        fetchData(currentPage);
-      } else {
-        Swal.fire(
-          "Error",
-          response.data.message || "Failed to update status",
-          "error"
-        );
-      }
-    } catch (error) {
-      Swal.fire(
-        "Error",
-        error.response?.data?.message ||
-        "An error occurred while updating the status",
-        "error"
-      );
-    }
-  };
-
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       <div className="container-fluid">
         <div className="row">
           <div className="col-12">
@@ -147,70 +118,80 @@ const BookingList = () => {
               <div className="section-body">
                 <div className="card">
                   <div className="card-body">
-                    <div className="d-flex justify-content-end">
-                      <div className="">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Search by booking code..."
-                          value={searchTerm}
-                          onChange={handleSearch}
-                          style={{
-                            backgroundColor: "#fd7a7f",
-                            paddingLeft: "10px",
-                          }}
-                        />
-                      </div>
+                    <div className="d-flex justify-content-end mb-3">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search by customer, product, or price..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        style={{
+                          width: "250px",
+                          border: "1px solid #ccc",
+                          paddingLeft: "10px",
+                        }}
+                      />
                     </div>
+
                     {loading ? (
                       <p>Loading...</p>
                     ) : (
-                      <div className="table-responsive">
+                      <div className="table-responsive position-relative">
+                        {isSearching && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: "0",
+                              left: "0",
+                              right: "0",
+                              bottom: "0",
+                              background: "rgba(255,255,255,0.6)",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              fontWeight: "bold",
+                              fontSize: "14px",
+                            }}
+                          >
+                            Updating results...
+                          </div>
+                        )}
+
                         <table className="table text-center">
                           <thead>
                             <tr>
                               <th>Sr_No.</th>
                               <th>Customer</th>
-                              <th>Category</th>
-                              <th>Sub Category</th>
-                              <th>Booking Code</th>
-                              <th>Amount</th>
+                              <th>Product</th>
+                              <th>Location</th>
+                              <th>Price</th>
                               <th>Status</th>
                               <th>Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {filteredBookings.length ? (
-                              filteredBookings.map((booking, index) => (
+                            {bookings.length > 0 ? (
+                              bookings.map((booking, index) => (
                                 <tr key={booking.id}>
-                                  <td>
-                                    {(currentPage - 1) * limit + index + 1}
-                                  </td>
-                                  <td>{booking.user?.name || "no name"}</td>
-                                  <td>
-                                    {booking.category?.name || "no category"}
-                                  </td>
-                                  <td>
-                                    {booking.subCategory?.name ||
-                                      "no sub category"}
-                                  </td>
-                                  <td>
-                                    {booking.booking_code || "no booking code"}
-                                  </td>
-                                  <td>${booking.amount || "no amount"}</td>
+                                  <td>{(currentPage - 1) * limit + index + 1}</td>
+                                  <td>{booking?.user?.name || ""}</td>
+                                  <td>{booking?.products?.name || ""}</td>
+                                  <td>{booking?.location || ""}</td>
+                                  <td>${booking?.price || ""}</td>
                                   <td>
                                     <select
                                       value={booking.status}
-                                      onChange={(e) => handleStatusChange(booking.id, e.target.value)}
+                                      disabled
                                       className="form-select text-black"
                                       style={{
                                         backgroundColor:
                                           booking.status === "0"
-                                            ? "#ff3333"
+                                            ? "#eb6a6a"
                                             : booking.status === "1"
-                                              ? "#ffff80"
-                                              : "#5cd65c",
-                                        paddingLeft: "10px",
+                                            ? "#99f899"
+                                            : "#ffff80",
+                                        textAlign: "center",
+                                        textAlignLast: "center",
                                       }}
                                     >
                                       {statusOptions.map((option) => (
@@ -220,50 +201,48 @@ const BookingList = () => {
                                       ))}
                                     </select>
                                   </td>
-
                                   <td>
                                     <Link
-                                      to={`/bookingDetail/${booking.id}`}
-                                      className="has-icon btn btn-success m-1"
-                                      style={{
-                                        backgroundColor: "#ff8080",
-                                        color: "white",
-                                      }}
+                                      to={`/bookingdetail/${booking.id}`}
+                                      className="btn btn-success m-1"
+                                      style={{ backgroundColor: "#788000", color: "white" }}
+                                      title="View Booking Details"
                                     >
-                                      <i className="me-100 fas fa-eye" />
+                                      <i className="fas fa-eye" />
                                     </Link>
                                     <button
                                       onClick={() => deleteUser(booking.id)}
-                                      className="has-icon btn m-1"
+                                      className="btn m-1"
                                       style={{
-                                        backgroundColor: "#ff8080",
-                                        borderColor: "#ff8080",
+                                        backgroundColor: "#ea5455",
+                                        borderColor: "#ea5455",
                                         color: "#fff",
                                       }}
+                                      title="Delete Booking"
                                     >
-                                      <i className="me-100 fas fa-trash" />
+                                      <i className="fas fa-trash" />
                                     </button>
                                   </td>
                                 </tr>
                               ))
                             ) : (
                               <tr>
-                                <td colSpan="8">No bookings found</td>
+                                <td colSpan="7" className="text-center text-muted">
+                                  No bookings found
+                                </td>
                               </tr>
                             )}
                           </tbody>
                         </table>
                       </div>
                     )}
-                    <Stack
-                      spacing={2}
-                      className="d-flex justify-content-center mt-3"
-                    >
+
+                    <Stack spacing={2} className="d-flex justify-content-center mt-3">
                       <Pagination
                         count={totalPages}
                         page={currentPage}
                         onChange={handlePageChange}
-
+                        color="primary"
                       />
                     </Stack>
                   </div>

@@ -15,30 +15,22 @@ const ContactList = () => {
   const limit = 10;
 
   useEffect(() => {
-    fetchData(currentPage);
-  }, [currentPage]);
+    fetchData(currentPage, searchTerm);
+  }, [currentPage, searchTerm]);
 
-  const fetchData = async () => {
+  const fetchData = async (page, search = "") => {
     try {
       const response = await axiosInstance.get(
-        `/contactList?page=${currentPage}&limit=${limit}`
+        `/contactList?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
       );
       if (response.data.success) {
         setData(response.data.body.data);
         setTotalPages(response.data.body.totalPages);
       } else {
-        Swal.fire(
-          "Error",
-          response.data.message || "Failed to load contacts",
-          "error"
-        );
+        Swal.fire("Error", response.data.message || "Failed to load contacts", "error");
       }
     } catch (error) {
-      Swal.fire(
-        "Error",
-        "An error occurred while fetching the contact list",
-        "error"
-      );
+      Swal.fire("Error", "An error occurred while fetching the contact list", "error");
     }
   };
 
@@ -48,24 +40,16 @@ const ContactList = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#ff8080",
+      confirmButtonColor: "#788000",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     });
 
     if (result.isConfirmed) {
       try {
-        await axiosInstance.delete(`/contact/${id}`);
-        const response = await axiosInstance.get(
-          `/contactList?page=${currentPage}&limit=${limit}`
-        );
-        if (response.data.success) {
-          const newTotalPages = response.data.body.totalPages;
-          if (currentPage > newTotalPages) {
-            setCurrentPage(newTotalPages || 1);
-          }
-          setTotalPages(newTotalPages);
-        }
+        await axiosInstance.post(`/contact/${id}`);
+        fetchData(currentPage, searchTerm);
+
         Swal.fire("Deleted!", "Contact has been deleted.", "success");
       } catch (error) {
         Swal.fire(
@@ -79,11 +63,13 @@ const ContactList = () => {
     }
   };
 
-  const filteredUsers = data.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); 
   };
 
   return (
@@ -113,20 +99,15 @@ const ContactList = () => {
               <div className="section-body">
                 <div className="card">
                   <div className="card-body">
-                    <div className="d-flex justify-content-end ">
-                      <div>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Search by name..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          style={{
-                            backgroundColor: "#fd7a7f",
-                            paddingLeft: "10px",
-                          }}
-                        />
-                      </div>
+                    <div className="d-flex justify-content-end mb-3">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search by name or email..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        style={{ width: "200px", border: "1px solid #ccc", paddingLeft: "10px" }}
+                      />
                     </div>
                     <div className="table-responsive">
                       <table className="table text-center">
@@ -140,49 +121,44 @@ const ContactList = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredUsers.length > 0 ? (
-                            filteredUsers.map((user, index) => (
+                          {data.length > 0 ? (
+                            data.map((user, index) => (
                               <tr key={user.id}>
-                                <td>{index + 1}</td>
-                                <td>{user.name || "no user"}</td>
-                                <td>{user.email || "no email"}</td>
+                                <td>{(currentPage - 1) * limit + index + 1}</td>
+                                <td>{user?.name || ""}</td>
+                                <td>{user?.email || ""}</td>
                                 <td>
-                                  {(user.countryCode || "") +
+                                  {(user?.countryCode || "") +
                                     " " +
-                                    (user.phoneNumber || "N/A")}
+                                    (user?.phoneNumber || "")}
                                 </td>
-
                                 <td>
                                   <Link
                                     to={`/contactDetail/${user.id}`}
-                                    className="has-icon btn btn-success m-1"
-                                    style={{
-                                      backgroundColor: "#ff8080",
-                                      color: "white",
-                                    }}
+                                    className="btn btn-success m-1"
+                                    style={{ backgroundColor: "#788000", color: "white" }}
+                                    title="View Contact Details"
                                   >
-                                    <i className="me-100 fas fa-eye" />
+                                    <i className="fas fa-eye" />
                                   </Link>
                                   <button
                                     onClick={() => deleteUser(user.id)}
-                                    className="has-icon btn m-1"
+                                    className="btn m-1"
                                     style={{
-                                      backgroundColor: "#ff8080",
-                                      borderColor: "#ff8080",
+                                      backgroundColor: "#ea5455",
+                                      borderColor: "#ea5455",
                                       color: "#fff",
                                     }}
+                                    title="Delete Contact"
                                   >
-                                    <i className="me-100 fas fa-trash" />
+                                    <i className="fas fa-trash" />
                                   </button>
                                 </td>
                               </tr>
                             ))
                           ) : (
                             <tr>
-                              <td
-                                colSpan="6"
-                                className="text-center text-muted"
-                              >
+                              <td colSpan="5" className="text-center text-muted">
                                 No contacts found
                               </td>
                             </tr>
@@ -190,10 +166,7 @@ const ContactList = () => {
                         </tbody>
                       </table>
                     </div>
-                    <Stack
-                      spacing={2}
-                      className="d-flex justify-content-center mt-3"
-                    >
+                    <Stack spacing={2} className="d-flex justify-content-center mt-3">
                       <Pagination
                         count={totalPages}
                         page={currentPage}

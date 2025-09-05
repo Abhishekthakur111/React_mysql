@@ -11,15 +11,27 @@ import Stack from "@mui/material/Stack";
 
 const UserList = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
 
   const dispatch = useDispatch();
-  const { users = [], totalPages } = useSelector((state) => state.users);
+  const { users = [], totalPages = 1 } = useSelector((state) => state.users);
 
   useEffect(() => {
-    dispatch(fetchUsers({ page: currentPage, limit })).then((response) => {});
-  }, [dispatch, currentPage]);
+    const t = setTimeout(() => setDebouncedSearch(searchTerm.trim()), 400);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    dispatch(fetchUsers({ page: currentPage, limit, search: debouncedSearch }));
+  }, [dispatch, currentPage, debouncedSearch]);
+
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
@@ -31,7 +43,7 @@ const UserList = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#ff8080",
+      confirmButtonColor: "#788000",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     });
@@ -57,25 +69,9 @@ const UserList = () => {
     toast.success("Status updated successfully");
   };
 
-  const filteredUsers = Array.isArray(users)
-    ? users.filter((user) =>
-        user.name?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
-
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} />
       <div className="container-fluid">
         <div className="row">
           <div className="col-12">
@@ -97,15 +93,12 @@ const UserList = () => {
                           className="form-control"
                           placeholder="Search by name..."
                           value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          style={{
-                            backgroundColor: "#fd7a7f",
-                            paddingLeft: "10px",
-                          }}
+                          onChange={handleSearchChange}
+                          style={{ border: "1px solid #ccc", paddingLeft: "10px" }}
                         />
                       </div>
                     </div>
-                    <div className="table-responsive">
+                    <div className="table-responsive mt-3">
                       <table className="table text-center">
                         <thead>
                           <tr>
@@ -119,8 +112,8 @@ const UserList = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredUsers.length > 0 ? (
-                            filteredUsers.map((user, index) => (
+                          {users.length > 0 ? (
+                            users.map((user, index) => (
                               <tr key={user.id}>
                                 <td>{(currentPage - 1) * limit + index + 1}</td>
                                 <td>
@@ -138,9 +131,9 @@ const UserList = () => {
                                     "No Image"
                                   )}
                                 </td>
-                                <td>{user.name || "no user"}</td>
-                                <td>{user.email || "no email"}</td>
-                                <td>{user.location || "no address"}</td>
+                                <td>{user.name || ""}</td>
+                                <td>{user.email || ""}</td>
+                                <td>{user.location || ""}</td>
                                 <td>
                                   <div className="form-check form-switch d-flex align-items-center justify-content-center">
                                     <input
@@ -148,18 +141,12 @@ const UserList = () => {
                                       type="checkbox"
                                       id={`toggleStatus${user.id}`}
                                       checked={user.status === "1"}
-                                      onChange={() =>
-                                        toggleStatus(user.id, user.status)
-                                      }
+                                      onChange={() => toggleStatus(user.id, user.status)}
                                       style={{
                                         backgroundColor:
-                                          user.status === "1"
-                                            ? "#ff8080"
-                                            : "lightgray",
+                                          user.status === "1" ? "#788000" : "lightgray",
                                         borderColor:
-                                          user.status === "1"
-                                            ? "#ff8080"
-                                            : "lightgray",
+                                          user.status === "1" ? "#788000" : "lightgray",
                                       }}
                                     />
                                   </div>
@@ -167,34 +154,33 @@ const UserList = () => {
                                 <td>
                                   <Link
                                     to={`/userDetail/${user.id}`}
-                                    className="has-icon btn btn-success m-1"
+                                    className="btn btn-success m-1"
                                     style={{
-                                      backgroundColor: "#ff8080",
+                                      backgroundColor: "#788000",
                                       color: "white",
                                     }}
+                                    title="View User Details"
                                   >
-                                    <i className="me-100 fas fa-eye" />
+                                    <i className="fas fa-eye" />
                                   </Link>
                                   <button
                                     onClick={() => deleteUserHandler(user.id)}
-                                    className="has-icon btn m-1"
+                                    className="btn m-1"
                                     style={{
-                                      backgroundColor: "#ff8080",
-                                      borderColor: "#ff8080",
+                                      backgroundColor: "#ea5455",
+                                      borderColor: "#ea5455",
                                       color: "#fff",
                                     }}
+                                    title="Delete User"
                                   >
-                                    <i className="me-100 fas fa-trash" />
+                                    <i className="fas fa-trash" />
                                   </button>
                                 </td>
                               </tr>
                             ))
                           ) : (
                             <tr>
-                              <td
-                                colSpan="8"
-                                style={{ textAlign: "center", padding: "20px" }}
-                              >
+                              <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
                                 No users found
                               </td>
                             </tr>
@@ -202,10 +188,7 @@ const UserList = () => {
                         </tbody>
                       </table>
                     </div>
-                    <Stack
-                      spacing={2}
-                      className="d-flex justify-content-center mt-3"
-                    >
+                    <Stack spacing={2} className="d-flex justify-content-center mt-3">
                       <Pagination
                         count={totalPages}
                         page={currentPage}
@@ -219,7 +202,7 @@ const UserList = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> 
     </>
   );
 };

@@ -75,11 +75,11 @@ const CategoryView = () => {
                         <input
                           type="text"
                           className="form-control"
-                          value={data.name || ""}
+                          value={data?.name || ""}
                           readOnly
                           style={{
                             paddingLeft: "10px",
-                            backgroundColor: "#ff8080",
+                            border: "1px solid #ccc",
                           }}
                         />
                       </div>

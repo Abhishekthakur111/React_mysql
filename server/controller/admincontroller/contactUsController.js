@@ -1,14 +1,32 @@
 const db = require("../../models");
 const helper = require("../../helper/helper");
+const { Op } = require("sequelize");
+
 
 module.exports = {
-    contact_get: async (req, res) => {
+    contactGet: async (req, res) => {
         try {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
             const offset = (page - 1) * limit;
-            const totalContacts = await db.contactus.count();
-            const data = await db.contactus.findAll({ limit, offset, order: [["id", "DESC"]], });
+            const search = req.query.search || "";
+            const whereCondition = search
+                ? {
+                    [Op.or]: [
+                        { name: { [Op.like]: `%${search}%` } },
+                        { email: { [Op.like]: `%${search}%` } },
+                    ],
+                }
+                : {};
+
+            const totalContacts = await db.contactus.count({ where: whereCondition });
+
+            const data = await db.contactus.findAll({
+                where: whereCondition,
+                limit,
+                offset,
+                order: [["id", "DESC"]],
+            });
 
             return helper.success(res, "All contact details", {
                 data,
@@ -21,7 +39,7 @@ module.exports = {
             return helper.error(res, "Something went wrong", error);
         }
     },
-    contact_view: async (req, res) => {
+    contactView: async (req, res) => {
         try {
             const { id } = req.params;
             const data = await db.contactus.findByPk(id);
@@ -30,11 +48,12 @@ module.exports = {
             return helper.error(res, "Something went wrong", error);
         }
     },
-    contact_delete: async (req, res) => {
+    contactDelete: async (req, res) => {
         try {
             const { id } = req.params;
             const data = await db.contactus.destroy({ where: { id } });
-            return res.status(200).json({ message: "Contact deleted successfully" });
+            return helper.success(res, "Contact deleted successfully");
+
         } catch (error) {
             return helper.error(res, "Something went wrong", error);
         }

@@ -14,31 +14,28 @@ const CategoryList = () => {
   const limit = 10;
 
   useEffect(() => {
-    fetchData(currentPage);
-  }, [currentPage]);
+    fetchData(currentPage, searchTerm);
+  }, [currentPage, searchTerm]);
 
-  const fetchData = async (page) => {
+  const fetchData = async (page, search = "") => {
     try {
       const response = await axiosInstance.get(
-        `/categorylist?page=${page}&limit=${limit}`
+        `/categorylist?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
       );
       if (response.data.success) {
         setCategories(response.data.body.data);
         setTotalPages(response.data.body.totalPages);
       } else {
-        Swal.fire(
-          "Error",
-          response.data.message || "Failed to load categories",
-          "error"
-        );
+        Swal.fire("Error", response.data.message || "Failed to load categories", "error");
       }
     } catch (error) {
-      Swal.fire(
-        "Error",
-        "An error occurred while fetching the category list",
-        "error"
-      );
+      Swal.fire("Error", "An error occurred while fetching the category list", "error");
     }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); 
   };
 
   const handlePageChange = (event, value) => {
@@ -51,7 +48,7 @@ const CategoryList = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#ff8080",
+      confirmButtonColor: "#788000",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
     });
@@ -59,18 +56,23 @@ const CategoryList = () => {
     if (result.isConfirmed) {
       try {
         await axiosInstance.post(`/categorydelete/${id}`);
+
         const response = await axiosInstance.get(
-          `/categorylist?page=${currentPage}&limit=${limit}`
+          `/categorylist?page=${currentPage}&limit=${limit}&search=${encodeURIComponent(searchTerm)}`
         );
+
         if (response.data.success) {
-          setCategories(response.data.body.data);
           const newTotalPages = response.data.body.totalPages;
-          if (currentPage > newTotalPages) {
-            setCurrentPage(newTotalPages || 1);
+          const newData = response.data.body.data;
+          if (newData.length === 0 && currentPage > 1) {
+            setCurrentPage((prevPage) => prevPage - 1);
+          } else {
+            setCategories(newData);
+            setTotalPages(newTotalPages);
           }
-          setTotalPages(newTotalPages);
+
+          Swal.fire("Deleted!", "Category has been deleted.", "success");
         }
-        Swal.fire("Deleted!", "Category has been deleted.", "success");
       } catch (error) {
         Swal.fire(
           "Error!",
@@ -93,7 +95,7 @@ const CategoryList = () => {
       });
 
       if (response.data.success) {
-        fetchData(currentPage);
+        fetchData(currentPage, searchTerm);
         toast.success("Status updated successfully");
       } else {
         toast.error(response.data.message || "Failed to change status");
@@ -103,17 +105,9 @@ const CategoryList = () => {
     }
   };
 
-  const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        hideProgressBar={false}
-      />
+      <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} />
       <div className="container-fluid">
         <div className="row">
           <div className="col-12">
@@ -135,24 +129,21 @@ const CategoryList = () => {
                           className="form-control"
                           placeholder="Search by name..."
                           value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          style={{
-                            backgroundColor: "#fd7a7f",
-                            paddingLeft: "10px",
-                          }}
+                          onChange={handleSearchChange}
+                          style={{ border: "1px solid #ccc", paddingLeft: "10px" }}
                         />
                       </div>
-                      <div className="">
+                      <div>
                         <Link
                           to="/categoryadd"
                           className="btn btn-light"
-                          style={{ backgroundColor: "#fd7a7f" }}
+                          style={{ border: "1px solid #ccc" }}
                         >
                           Add
                         </Link>
                       </div>
                     </div>
-                    <div className="table-responsive">
+                    <div className="table-responsive mt-3">
                       <table className="table text-center">
                         <thead>
                           <tr>
@@ -164,20 +155,20 @@ const CategoryList = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredCategories.length === 0 ? (
+                          {categories.length === 0 ? (
                             <tr>
                               <td colSpan="5">No categories found</td>
                             </tr>
                           ) : (
-                            filteredCategories.map((category, index) => (
+                            categories.map((category, index) => (
                               <tr key={category.id}>
                                 <td>{(currentPage - 1) * limit + index + 1}</td>
-                                <td>{category.name || "no category"}</td>
+                                <td>{category?.name || ""}</td>
                                 <td>
                                   {category.image ? (
                                     <img
                                       src={`${BASE_URL}/${category.image}`}
-                                      alt={category.name}
+                                      alt={category?.name}
                                       style={{
                                         width: "50px",
                                         height: "50px",
@@ -185,7 +176,7 @@ const CategoryList = () => {
                                       }}
                                     />
                                   ) : (
-                                    "No Image"
+                                    ""
                                   )}
                                 </td>
                                 <td>
@@ -195,21 +186,12 @@ const CategoryList = () => {
                                       type="checkbox"
                                       id={`statusSwitch-${category.id}`}
                                       checked={category.status === "1"}
-                                      onChange={() =>
-                                        toggleStatus(
-                                          category.id,
-                                          category.status
-                                        )
-                                      }
+                                      onChange={() => toggleStatus(category.id, category.status)}
                                       style={{
                                         backgroundColor:
-                                          category.status === "1"
-                                            ? "#ff8080"
-                                            : "lightgray",
+                                          category.status === "1" ? "#788000" : "lightgray",
                                         borderColor:
-                                          category.status === "1"
-                                            ? "#ff8080"
-                                            : "lightgray",
+                                          category.status === "1" ? "#788000" : "lightgray",
                                       }}
                                     />
                                   </div>
@@ -219,9 +201,10 @@ const CategoryList = () => {
                                     to={`/categoryDetail/${category.id}`}
                                     className="btn btn-success m-1"
                                     style={{
-                                      backgroundColor: "#ff8080",
+                                      backgroundColor: "#788000",
                                       color: "white",
                                     }}
+                                    title="View Category Details"
                                   >
                                     <i className="fas fa-eye" />
                                   </Link>
@@ -229,9 +212,10 @@ const CategoryList = () => {
                                     to={`/updatecategory/${category.id}`}
                                     className="btn btn-success m-1"
                                     style={{
-                                      backgroundColor: "#ff8080",
+                                      backgroundColor: "#28c76f",
                                       color: "white",
                                     }}
+                                    title="Edit Category"
                                   >
                                     <i className="fas fa-edit" />
                                   </Link>
@@ -239,10 +223,11 @@ const CategoryList = () => {
                                     onClick={() => deleteCategory(category.id)}
                                     className="btn m-1"
                                     style={{
-                                      backgroundColor: "#ff8080",
-                                      borderColor: "#ff8080",
+                                      backgroundColor: "#ea5455",
+                                      borderColor: "#ea5455",
                                       color: "#fff",
                                     }}
+                                    title="Delete Category"
                                   >
                                     <i className="fas fa-trash" />
                                   </button>
@@ -253,10 +238,7 @@ const CategoryList = () => {
                         </tbody>
                       </table>
                     </div>
-                    <Stack
-                      spacing={2}
-                      className="d-flex justify-content-center mt-3"
-                    >
+                    <Stack spacing={2} className="d-flex justify-content-center mt-3">
                       <Pagination
                         count={totalPages}
                         page={currentPage}
