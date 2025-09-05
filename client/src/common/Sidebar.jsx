@@ -95,11 +95,11 @@ const Sidebar = ({ handleLinkClick }) => {
         ></i>
         <NavLink className="navbar-brand m-0" to="/dashboard">
           <img
-            src="/assets/img/logo.png"
+            src="/assets/img/home-decor-3.png"
             className="navbar-brand-img h-100"
             alt="main_logo"
           />
-          <span className="ms-1 font-weight-bold text-white">EZRentUS</span>
+          <span className="ms-1 font-weight-bold text-white">React</span>
         </NavLink>
       </div>
       <hr className="horizontal light mt-0 mb-2" />

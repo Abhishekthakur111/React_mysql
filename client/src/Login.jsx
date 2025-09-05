@@ -77,7 +77,7 @@ const Login = () => {
           <div
             className="page-header align-items-start min-vh-100"
             style={{
-              backgroundImage: "url('/assets/img/ezrentus.png')",
+              backgroundImage: "url('/assets/img/home-decor-3.png')",
             }}
           >
             <span className="mask opacity-6"></span>
@@ -94,7 +94,7 @@ const Login = () => {
                     </div> */}
                     <div className="card-body login-page">
                       <img
-                        src="/assets/img/logo.png"
+                        src="/assets/img/home-decor-3.png"
                         alt="logo"
                         className="img-fluid mb-3 m-auto d-block"
                         style={{ maxWidth: "100px" }}
